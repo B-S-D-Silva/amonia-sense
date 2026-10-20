@@ -106,7 +106,7 @@ INSERT INTO Dado_captado VALUES
 
 -- truncate Dado_captado;
 
-SELECT Empresa.idEmpresa AS 'ID Empresa', Empresa.nomeFantasia AS 'Empresa', Locall.UF, Sensor.evaporador AS 'Evaporador', Dado_captado.concentracaoAmonia AS 'PPM Vazado',
+SELECT Empresa.idEmpresa AS 'ID Empresa', sensor.idSensor AS 'ID Sensor', Empresa.nomeFantasia AS 'Empresa', Locall.UF, Sensor.evaporador AS 'Evaporador', Dado_captado.concentracaoAmonia AS 'PPM Vazado',
 CASE
 	WHEN concentracaoAmonia = 0 THEN 'Normal'
     WHEN concentracaoAmonia > 0 AND concentracaoAmonia < 10 THEN 'Alerta'
