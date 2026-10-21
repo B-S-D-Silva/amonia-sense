@@ -104,16 +104,9 @@
                     <h3>Verificar área</h3>
                 </article>
 
-                <article class="estado-leitura high">
-                    <div class="card-top">
-                        <span>ALERTA ALTO</span>
-                    </div>
-                    <h3>Isolar ambiente</h3>
-                </article>
-
                 <article class="estado-leitura critical">
                     <div class="card-top">
-                        <span>CRÍTICO</span>
+                        <span>ALERTA CRÍTICO</span>
                     </div>
                     <h3>Evacuar área</h3>
                 </article>
@@ -146,14 +139,9 @@
                         Alerta
                     </div>
 
-                    <div class="legenda-item alerta-alto-legenda">
-                        <span></span>
-                        Alerta Alto
-                    </div>
-
                     <div class="legenda-item critico">
                         <span></span>
-                        Crítico
+                        Alerta Crítico
                     </div>
                 </div>
             </div>
@@ -168,9 +156,9 @@
                     <span>3 eventos</span>
                 </div>
 
-                <div class="evento alerta-alto-evento">
+                <div class="evento atencao-evento">
                     <div>
-                        <strong>Alerta Alto</strong>
+                        <strong>Alerta</strong>
                         <p>15:42 - 8 min</p>
                     </div>
                     <b>11 ppm</b>
@@ -290,13 +278,8 @@
                             },
                             {
                                 inicio: 1,
-                                fim: 10,
-                                cor: 'rgba(228, 167, 46, 0.12)'
-                            },
-                            {
-                                inicio: 10,
                                 fim: 20,
-                                cor: 'rgba(255, 122, 26, 0.13)'
+                                cor: 'rgba(228, 167, 46, 0.12)'
                             },
                             {
                                 inicio: 20,
@@ -346,7 +329,6 @@
 
                         var limites = [
                             { valor: 1, cor: '#d49a2a' },
-                            { valor: 10, cor: '#f07819' },
                             { valor: 20, cor: '#df2337' }
                         ];
 
@@ -429,18 +411,13 @@
                 descricao = 'Manter rotina';
                 chave = 'stable';
 
-            } else if (valor < 10) {
+            } else if (valor < 20) {
                 rotulo = 'Alerta';
                 descricao = 'Verificar área';
                 chave = 'attention';
 
-            } else if (valor < 20) {
-                rotulo = 'Alerta Alto';
-                descricao = 'Isolar ambiente';
-                chave = 'high';
-
             } else {
-                rotulo = 'Crítico';
+                rotulo = 'Alerta Crítico';
                 descricao = 'Evacuar área';
                 chave = 'critical';
             }

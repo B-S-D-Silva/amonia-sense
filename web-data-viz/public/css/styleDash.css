@@ -191,23 +191,49 @@ main {
 }
 
 .estado h2 {
-    margin-top: 7px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 16px;
+}
+
+.estado h2::before {
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+    flex: 0 0 auto;
+    background: currentColor;
+    border-radius: 50%;
+    content: "";
 }
 
 .estado h2[data-state="stable"] {
     color: #16804d;
+    background: #eaf5ef;
 }
 
 .estado h2[data-state="attention"] {
     color: #a66a05;
+    background: #fff4dc;
 }
 
 .estado h2[data-state="high"] {
     color: #c94a13;
+    background: #fff0e7;
 }
 
 .estado h2[data-state="critical"] {
-    color: #c91d2c;
+    color: #bf202d;
+    background: #fff0f1;
+}
+
+.estado > p {
+    margin: 0;
+    color: #7c8982;
+    font-size: 12px;
 }
 
 .estado > small strong {
@@ -216,13 +242,13 @@ main {
 
 .estados-leitura {
     margin: 0;
-    padding: 12px 14px;
+    padding: 14px 16px;
 }
 
 .estados-titulo {
     display: flex;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .estados-titulo h2 {
@@ -235,17 +261,20 @@ main {
 
 .estados-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px;
 }
 
 .estado-leitura {
     min-width: 0;
-    padding: 2px 10px;
+    padding: 10px 14px;
+    background: #f8fbfa;
     border-left: 3px solid;
+    border-radius: 10px;
 }
 
 .estado-leitura.stable {
+    background: #f2faf6;
     border-left-color: #15965a;
 }
 
@@ -258,6 +287,7 @@ main {
 }
 
 .estado-leitura.attention {
+    background: #fffbf0;
     border-left-color: #f0a000;
 }
 
@@ -276,6 +306,7 @@ main {
 }
 
 .estado-leitura.critical {
+    background: #fff5f5;
     border-left-color: #ed2939;
 }
 
@@ -462,13 +493,13 @@ main {
     .estados-leitura {
         margin-bottom: 14px;
     }
-
-    .estados-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
 }
 
 @media (max-width: 760px) {
+    .estados-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .dashboard-page .cards {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
