@@ -338,7 +338,7 @@ body {
 }
 /* RODAPÉ */
 
-footer {
+/* footer {
     background-color: #172b3d;
     color: white;
     padding: 35px 5% 15px;
@@ -370,8 +370,8 @@ footer {
     padding-top: 12px;
     font-size: 7px;
     color: #aaa;
-}
-footer {
+} */
+/* footer {
     background-color: #172b3d;
     color: white;
     padding: 35px 5% 15px;
@@ -409,7 +409,7 @@ footer {
     color: #BDB8AD;
     line-height: 1.7;
     margin: 0 0 5px 0;
-}
+} */
 
 .copyright {
     border-top: 1px solid #304455;
