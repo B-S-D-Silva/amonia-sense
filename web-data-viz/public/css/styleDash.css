@@ -181,12 +181,29 @@ main {
     background: #fff0f1;
 }
 
-.linha {
+.linha1 {
     height: 1px;
     margin: 8px 0 7px;
     background: #edf1ef;
 }
 
+.linha2 {
+    height: 0.5px;
+    margin: 27px 0 10px;
+    background: #edf1ef;
+}
+
+.linha3 {
+    height: 0.5px;
+    margin: 52px 0 0;
+    background: #edf1ef;
+}
+
+#estadoDescricao {
+    font-size: 11px;
+    color: #78857e;
+    padding: 16px 12px 12px;
+}
 .card > small {
     color: #78857e;
     font-size: 11px;
