@@ -108,6 +108,10 @@ main {
     letter-spacing: 0.8px;
 }
 
+.card-top h2 {
+    margin: 12px 0;
+}
+
 .card h2 {
     margin: 7px 0 4px;
     font-size: 16px;
@@ -204,6 +208,7 @@ main {
     color: #78857e;
     padding: 16px 12px 12px;
 }
+
 .card > small {
     color: #78857e;
     font-size: 11px;
