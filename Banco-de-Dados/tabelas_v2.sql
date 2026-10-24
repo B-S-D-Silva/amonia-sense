@@ -105,8 +105,8 @@ INSERT INTO Dado_captado VALUES
 (DEFAULT, 5, 0.00, DEFAULT);
 
 -- truncate Dado_captado;
-
-SELECT Empresa.idEmpresa AS 'ID Empresa', sensor.idSensor AS 'ID Sensor', Empresa.nomeFantasia AS 'Empresa', Locall.UF, Sensor.evaporador AS 'Evaporador', Dado_captado.concentracaoAmonia AS 'PPM Vazado',
+-- SELECT com todas as empresas e sensores
+SELECT Empresa.idEmpresa AS 'ID Empresa', Sensor.idSensor AS 'ID Sensor', Empresa.nomeFantasia AS 'Empresa', Locall.UF, Sensor.evaporador AS 'Evaporador', Dado_captado.concentracaoAmonia AS 'PPM Vazado',
 CASE
 	WHEN concentracaoAmonia = 0 THEN 'Normal'
     WHEN concentracaoAmonia > 0 AND concentracaoAmonia < 10 THEN 'Alerta'
@@ -115,3 +115,15 @@ CASE
 FROM Empresa JOIN Locall ON fkEmpresa = idEmpresa
 JOIN Sensor ON fkLocal = idLocal
 JOIN Dado_captado ON fkSensor = idSensor;
+
+-- Informações de vazamento apenas da empresa 2
+SELECT Empresa.nomeFantasia AS 'Empresa', Sensor.idSensor AS 'ID Sensor', Sensor.evaporador AS 'Evaporador', Dado_captado.concentracaoAmonia AS 'PPM Vazado',
+CASE
+	WHEN concentracaoAmonia = 0 THEN 'Normal'
+    WHEN concentracaoAmonia > 0 AND concentracaoAmonia < 10 THEN 'Alerta'
+    WHEN concentracaoAmonia IS NULL THEN 'Sensor Inativo'
+    ELSE 'Alerta Crítico' END AS 'Estado'
+FROM Empresa JOIN Locall ON fkEmpresa = idEmpresa
+JOIN Sensor ON fkLocal = idLocal
+JOIN Dado_captado ON fkSensor = idSensor
+WHERE Empresa.idEmpresa = 2;
