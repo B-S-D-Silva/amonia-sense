@@ -1,11 +1,11 @@
 /* ==========================================================
-   CSS ÚNICO - calculadora + home + login
-   Todos os nomes de classes/ids foram mantidos.
+   CSS ÚNICO - home + login + calculadora + equipe + rodapé
    Cores padronizadas:
    azul escuro #1A2A3A | azul destaque #44749D | azul link #2876a9
    borda input #8bb5ce | cinza fundo #f1f1f1 | texto secundário #777
    vermelho #c0392b | navbar #1A2A3A
    ========================================================== */
+
 /* ==========================================================
    BASE
    ========================================================== */
@@ -51,12 +51,6 @@ a {
     width: 100%;
     padding: 8px 0;
     z-index: 10;
-}
-
-/* Na calculadora o menu fica no fluxo normal da página */
-body:has(.calculator-page) .topbar {
-    position: fixed;
-    padding: 8px 0;
 }
 
 .nav-shell {
@@ -105,7 +99,6 @@ body:has(.calculator-page) .topbar {
     opacity: 0.7;
 }
 
-
 .botao-login {
     background-color: #FFFFFF;
     color: #1A2A3A !important;
@@ -143,7 +136,6 @@ body:has(.calculator-page) .topbar {
     font-size: 10px;
     border-radius: 15px;
 }
-
 
 .fundoIntro h1 {
     color: #FFFFFF;
@@ -680,59 +672,53 @@ body:has(.calculator-page) .topbar {
 
 /* ==========================================================
    CALCULADORA
+   Cada regra aparece UMA vez. Para mudar um tamanho, edite aqui.
    ========================================================== */
 
+/* Estrutura da página */
+
 .calculator-page {
-    width: min(96%, 1200px);
-    margin: 22px auto 40px;
+    width: min(94%, 1120px);
+    margin: 46px auto 40px;
 }
 
 .calculator-heading {
-    margin: 0 0 22px;
+    max-width: 760px;
+    margin: 0 0 26px;
+}
+
+.calculator-eyebrow,
+.step-label,
+.result-kicker {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: #44749D;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .calculator-heading h1 {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     color: #1A2A3A;
-    font-size: 20px;
+    font-size: clamp(25px, 4vw, 36px);
     font-weight: 700;
+    line-height: 1.15;
 }
 
 .calculator-heading p {
+    max-width: 650px;
     color: #777;
-    font-size: 11px;
-}
-
-.calculator-tabs {
-    display: flex;
-    gap: 14px;
-    margin-bottom: 14px;
-}
-
-.calculator-tab {
-    width: 190px;
-    min-height: 49px;
-    padding: 8px 14px;
-    border: 1px solid #d0ccc5;
-    border-radius: 10px;
-    background: #FFFFFF;
-    color: #1A2A3A;
-    font: inherit;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.calculator-tab.active {
-    background: #c8d6e1;
-    border-color: #b8c8d4;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
 .calculator-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr);
-    gap: 17px;
-    align-items: stretch;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 20px;
+    align-items: start;
 }
 
 .calculator-grid[hidden] {
@@ -741,22 +727,25 @@ body:has(.calculator-page) .topbar {
 
 .calculator-card {
     min-width: 0;
-    padding: 24px 23px 13px;
-    border: 1px solid #d0ccc5;
-    border-radius: 11px;
+    padding: 28px;
+    border: 1px solid #e0e5e9;
+    border-radius: 14px;
     background: #FFFFFF;
+    box-shadow: 0 10px 30px rgba(26, 42, 58, 0.06);
 }
 
 .calculator-card h2 {
-    margin: 0 0 18px;
+    margin-bottom: 20px;
     color: #1A2A3A;
-    font-size: 12px;
+    font-size: 19px;
     font-weight: 700;
 }
 
+/* Formulário */
+
 .calculator-fields {
     display: grid;
-    gap: 12px;
+    gap: 16px;
 }
 
 .field {
@@ -766,30 +755,35 @@ body:has(.calculator-page) .topbar {
     gap: 5px;
 }
 
-.field label,
-.time-options legend {
+.field label {
     color: #1A2A3A;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.25px;
-    text-transform: uppercase;
+    letter-spacing: 0;
+    text-transform: none;
 }
 
 .field input {
     width: 100%;
-    height: 30px;
-    padding: 6px 10px;
-    border: 1px solid #8bb5ce;
-    border-radius: 5px;
+    height: 43px;
+    padding: 9px 12px;
+    border: 1px solid #cbd4dc;
+    border-radius: 7px;
     background-color: #FFFFFF;
-    color: #1A2A3A;
+    color: #26384a;
     font: inherit;
-    font-size: 11px;
+    font-size: 15px;
+}
+
+.field input:focus {
+    border-color: #44749D;
+    outline: 3px solid rgba(68, 116, 157, 0.18);
 }
 
 .field small {
     color: #777;
-    font-size: 10px;
+    font-size: 11px;
+    line-height: 1.45;
 }
 
 .field-row {
@@ -798,46 +792,64 @@ body:has(.calculator-page) .topbar {
     gap: 10px;
 }
 
-.time-options {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border: 0;
+/* Modo avançado */
+
+.advanced-settings {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid #e3e7eb;
 }
 
-.time-options legend {
-    float: left;
-    margin-right: 4px;
-}
-
-.time-options label {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    color: #1A2A3A;
-    font-size: 9px;
+.advanced-settings summary {
+    color: #37698f;
+    font-size: 13px;
     font-weight: 700;
-    text-transform: uppercase;
+    cursor: pointer;
 }
 
-.time-options input {
-    width: 14px;
-    height: 14px;
-    margin: 0;
-    accent-color: #1A2A3A;
+.advanced-settings summary:focus-visible,
+.primary-button:focus-visible {
+    outline: 3px solid rgba(68, 116, 157, 0.35);
+    outline-offset: 3px;
 }
+
+.advanced-intro {
+    margin: 12px 0;
+    color: #66727c;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.advanced-fields {
+    gap: 12px;
+}
+
+.advanced-fields .field-row {
+    align-items: start;
+}
+
+.advanced-fields .field label {
+    font-size: 10px;
+}
+
+.advanced-fields .field input {
+    height: 37px;
+    font-size: 13px;
+}
+
+/* Botão e erro */
 
 .primary-button {
     width: 100%;
-    min-height: 30px;
-    margin-top: 16px;
+    min-height: 46px;
+    margin-top: 20px;
     padding: 8px 12px;
     border: 0;
-    border-radius: 6px;
+    border-radius: 7px;
     background: #44749D;
     color: #FFFFFF;
     font: inherit;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.4px;
     text-transform: uppercase;
@@ -848,25 +860,60 @@ body:has(.calculator-page) .topbar {
     background: #37698f;
 }
 
+.form-error {
+    margin-top: 10px;
+    color: #a52222;
+    font-size: 12px;
+}
+
+/* Resultados */
+
 .results-card {
     display: flex;
     flex-direction: column;
+    gap: 0;
+}
+
+.result-kicker {
+    color: #b43232;
+}
+
+.loss-total {
+    display: grid;
+    gap: 5px;
+    margin-bottom: 14px;
+    padding: 18px;
+    border: 1px solid #f0d0cc;
+    border-radius: 10px;
+    background: #fff4f2;
+}
+
+.loss-total span {
+    color: #7c3934;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.loss-total strong {
+    color: #ae2929;
+    font-size: clamp(28px, 4vw, 38px);
+    line-height: 1.15;
 }
 
 .result-list {
     display: grid;
-    gap: 11px;
+    gap: 9px;
 }
 
 .result-item {
-    min-height: 52px;
-    padding: 10px 12px;
+    min-height: 62px;
+    padding: 12px 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
     border-radius: 7px;
-    background: #f1f1f1;
+    background: #f5f7f8;
 }
 
 .result-item div {
@@ -876,32 +923,112 @@ body:has(.calculator-page) .topbar {
 
 .result-item small {
     color: #777;
-    font-size: 8px;
+    font-size: 10px;
     text-transform: uppercase;
 }
 
 .result-item strong {
     color: #1A2A3A;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .result-item b {
-    color: #c0392b;
-    font-size: 15px;
+    color: #1A2A3A;
+    font-size: 14px;
     text-align: right;
     white-space: nowrap;
 }
 
-.result-total small {
-    color: #44749D;
-    font-weight: 700;
+/* Painel de retorno (payback) */
+
+.payback-panel {
+    display: grid;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 10px;
+    background: #edf6f1;
+    color: #1c5a3c;
 }
+
+.payback-panel > span {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.payback-panel p {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.payback-panel p strong {
+    font-size: 21px;
+}
+
+.payback-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 5px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(28, 90, 60, 0.18);
+}
+
+.payback-metrics div {
+    display: grid;
+    gap: 4px;
+}
+
+.payback-metrics small {
+    color: #4e7160;
+    font-size: 10px;
+}
+
+.payback-metrics strong {
+    font-size: 14px;
+}
+
+/* Nota abaixo dos resultados  <<< MUDE O TAMANHO DA FONTE AQUI >>> */
 
 .result-note {
     margin: 14px 3px 0;
     color: #777;
-    font-size: 9px;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+/* Como estimamos o impacto */
+
+.calculation-method {
+    margin: 22px 0 42px;
+    padding: 22px 26px;
+    border: 1px solid #e0e5e9;
+    border-radius: 12px;
+    background: #FFFFFF;
+}
+
+.calculation-method h2 {
+    margin-bottom: 12px;
+    color: #1A2A3A;
+    font-size: 17px;
+}
+
+.calculation-method ol {
+    display: grid;
+    gap: 8px;
+    padding-left: 20px;
+    color: #3e4e5c;
+    font-size: 12px;
     line-height: 1.5;
+}
+
+.calculation-method > p {
+    margin-top: 12px;
+    color: #66727c;
+    font-size: 11px;
+    line-height: 1.6;
 }
 
 
@@ -952,7 +1079,6 @@ footer {
     opacity: 0.7;
 }
 
-
 .footer-conteudo h3 {
     font-size: 14px;
     margin-top: 0;
@@ -976,6 +1102,7 @@ footer {
     display: flex;
     justify-content: space-between;
 }
+
 
 /* ==========================================================
    EQUIPE
@@ -1032,7 +1159,6 @@ footer {
 .foto-membro img[src=""] {
     display: none;
 }
-
 
 
 /* ==========================================================
@@ -1094,30 +1220,26 @@ footer {
     }
 
     .calculator-page {
-        width: 94%;
-        margin-top: 16px;
-    }
-
-    .calculator-tabs {
-        gap: 7px;
-    }
-
-    .calculator-tab {
-        width: auto;
-        flex: 1;
-        padding: 7px;
-        font-size: 10px;
+        margin-top: 28px;
     }
 
     .calculator-card {
-        padding: 18px 15px 13px;
+        padding: 20px 17px;
     }
 
     .field-row {
         grid-template-columns: 1fr;
     }
 
-    .time-options {
-        flex-wrap: wrap;
+    .advanced-fields .field-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .payback-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .calculation-method {
+        padding: 18px;
     }
 }
