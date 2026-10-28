@@ -782,7 +782,7 @@ a {
 
 .field small {
     color: #777;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.45;
 }
 
@@ -829,7 +829,7 @@ a {
 }
 
 .advanced-fields .field label {
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .advanced-fields .field input {
@@ -995,7 +995,7 @@ a {
 .result-note {
     margin: 14px 3px 0;
     color: #777;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.6;
 }
 
@@ -1027,7 +1027,7 @@ a {
 .calculation-method > p {
     margin-top: 12px;
     color: #66727c;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.6;
 }
 
