@@ -94,10 +94,10 @@
             </select>
 
             <h2>SENHA</h2>
-            <input type="password" placeholder="Crie uma senha forte" id="input_criesenha" autocomplete="new-password">
+            <input type="password" placeholder="Crie uma senha forte" id="input_criesenha" autocomplete="new-password" oninput="suaFuncao(this.value)">
 
             <h2>CONFIRMAR SENHA</h2>
-            <input type="password" placeholder="Repita a senha criada" id="input_repita" autocomplete="new-password">
+            <input type="password" placeholder="Repita a senha criada" id="input_repita" autocomplete="new-password" oninput="suaFuncao(this.value)">
 
             <button class="btn_entrar" id="btn_cadastrar" onclick="Criar()">
                 CADASTRAR
