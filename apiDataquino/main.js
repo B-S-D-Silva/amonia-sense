@@ -10,7 +10,7 @@ const SERVIDOR_PORTA = Number(process.env.PORT) || 3300;
 const PORTA_SERIAL_PADRAO = process.env.ARDUINO_PORT || process.argv[2] || null;
 
 // habilita ou desabilita a inserção de dados no banco de dados
-const HABILITAR_OPERACAO_INSERIR = false;
+const HABILITAR_OPERACAO_INSERIR = true;
 
 const normalizarIdentificador = (valor) => String(valor ?? '').replace(/^0x/i, '').toLowerCase();
 
@@ -81,7 +81,7 @@ const serial = async (
 
             // este insert irá inserir os dados na tabela "medida"
             await poolBancoDados.execute(
-                'INSERT INTO Dado_captado (fkSensor, concentracaoAmonia, dataHora) VALUES (default, ?, now)',
+                'INSERT INTO Dado_captado (fkSensor, concentracaoAmonia) VALUES (1, ?)',
                 [sensorGas]
             );
             console.log('valores inseridos no banco: ',   sensorGas);
