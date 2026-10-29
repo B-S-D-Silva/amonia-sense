@@ -22,7 +22,7 @@ CREATE TABLE Usuario (
 
 CREATE TABLE Login (
 	idLogin INT PRIMARY KEY AUTO_INCREMENT,
-    email VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
     senha VARCHAR(60) NOT NULL,
     fkUsuario INT,
     CONSTRAINT fkUsuarioLogin FOREIGN KEY (fkUsuario) REFERENCES Usuario(idUsuario)
@@ -61,13 +61,6 @@ CREATE TABLE Dado_captado (
     dataHora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fkDadoSensor FOREIGN KEY (fkSensor) REFERENCES Sensor(idSensor)
 );
-
- -- DROP TABLE Empresa;
- -- DROP TABLE Usuario;
- -- DROP TABLE Locall;
- -- DROP TABLE Sensor;
- -- DROP TABLE Dado_captado;
-
 
 INSERT INTO Empresa VALUES
 (DEFAULT, 'Frigorífico São Paulo', '12345678000101'),
