@@ -64,11 +64,6 @@
                     5
                     <small>ppm</small>
                 </div>
-<!-- 
-                <div class="indicador" id="indicadorAtual" data-state="attention">
-                    Alerta
-                </div> -->
-
                 <div class="linha2"></div>
                 <small>Leitura estática de demonstração</small>
             </div>
@@ -80,9 +75,7 @@
 
                 <h2 id="estadoNivel" data-state="attention">Alerta</h2>
 
-                <div class="linha3">
-                    <p id="estadoDescricao">Verificar área</p>
-                </div>
+                <p class="estado-descricao" id="estadoDescricao">Verificar área</p>
             </div>
 
         </section>
@@ -160,39 +153,17 @@
 
                 <div class="eventos-topo">
                     <div>
-                        <h2>Eventos de hoje</h2>
-                        <p>Ocorrências de amônia detectadas</p>
+                        <h2>Relatório de alertas</h2>
+                        <p>Somente alerta e crítico · dados do gráfico</p>
                     </div>
 
-                    <span>3 eventos</span>
+                    <span id="totalEventos">0 eventos</span>
                 </div>
 
-                <div class="evento atencao-evento">
-                    <div>
-                        <strong>Alerta</strong>
-                        <p>15:00 - 8 min</p>
-                    </div>
-                    <b>11 ppm</b>
-                </div>
-
-                <div class="evento atencao-evento">
-                    <div>
-                        <strong>Alerta</strong>
-                        <p>09:00 - 12 min</p>
-                    </div>
-                    <b>3 ppm</b>
-                </div>
-
-                <div class="evento atencao-evento">
-                    <div>
-                        <strong>Alerta</strong>
-                        <p>03:00 - 4 min</p>
-                    </div>
-                    <b>1 ppm</b>
-                </div>
+                <div class="lista-eventos" id="listaEventos" aria-live="polite"></div>
 
                 <div class="historico">
-                    Ver histórico completo
+                    Leituras estáveis não são exibidas
                 </div>
 
             </div>
@@ -245,11 +216,7 @@
     </footer>
 
     <script>
-        // ==========================================
-        // DADOS ESTÁTICOS DE PPM
-        // ==========================================
 
-        // O gráfico começa em zero e sobe gradualmente até 5 ppm.
         var leituras = [
             0, 0, 0, 0, 0,
             0, 0, 0, 0, 0,
@@ -267,14 +234,11 @@
         ];
 
         var valorAtual = document.getElementById('valorAtual');
-        var indicadorAtual = document.getElementById('indicadorAtual');
         var estadoNivel = document.getElementById('estadoNivel');
         var estadoDescricao = document.getElementById('estadoDescricao');
         var picoAtual = document.getElementById('picoAtual');
-
-        // ==========================================
-        // GRÁFICO
-        // ==========================================
+        var listaEventos = document.getElementById('listaEventos');
+        var totalEventos = document.getElementById('totalEventos');
 
         var sensorGas = new Chart(
             document.getElementById('sensorGas').getContext('2d'),
@@ -292,28 +256,25 @@
                         borderWidth: 3,
                         tension: 0.3,
 
-                        pointRadius: 3,
+                        pointRadius: 4,
                         pointHoverRadius: 6,
                         pointBackgroundColor: '#ffffff',
-                        pointBorderColor: '#20a36b',
+                        pointBorderColor: function(context) {
+                            var valor = context.raw;
+
+                            if (valor >= 20) return '#df2337';
+                            if (valor > 1) return '#d49a2a';
+                            return '#20a36b';
+                        },
                         pointBorderWidth: 2,
 
                         fill: true,
-
-                        // 0 = verde; acima de 0 e abaixo de 20 = amarelo;
-                        // 20 ou mais = vermelho.
                         segment: {
                             borderColor: function(context) {
                                 var valor = context.p1.parsed.y;
 
-                                if (valor >= 20) {
-                                    return '#df2337';
-                                }
-
-                                if (valor > 0) {
-                                    return '#d49a2a';
-                                }
-
+                                if (valor >= 20) return '#df2337';
+                                if (valor > 1) return '#d49a2a';
                                 return '#20a36b';
                             }
                         }
@@ -323,7 +284,7 @@
                 plugins: [{
                     id: 'faixasDeSeguranca',
 
-                    // Faixas coloridas do fundo.
+            
                     beforeDraw: function(chart) {
                         var ctx = chart.ctx;
                         var area = chart.chartArea;
@@ -373,7 +334,6 @@
                         ctx.restore();
                     },
 
-                    // Linhas horizontais fixas em 1 e 20 ppm.
                     beforeDatasetsDraw: function(chart) {
                         var ctx = chart.ctx;
                         var area = chart.chartArea;
@@ -449,53 +409,86 @@
             }
         );
 
-        // ==========================================
-        // STATUS E INDICADORES
-        // ==========================================
+        function obterEstado(valor) {
+            if (valor < 1) {
+                return { rotulo: 'Estável', descricao: 'Manter rotina', chave: 'stable' };
+            }
+
+            if (valor < 20) {
+                return { rotulo: 'Alerta', descricao: 'Verificar área', chave: 'attention' };
+            }
+
+            return { rotulo: 'Alerta Crítico', descricao: 'Evacuar área', chave: 'critical' };
+        }
+
+        function obterEventos() {
+            return leituras.reduce(function(eventos, valor, indice) {
+                var estado = obterEstado(valor);
+
+                if (estado.chave !== 'stable') {
+                    eventos.push({
+                        chave: estado.chave,
+                        rotulo: estado.rotulo,
+                        horario: horarios[indice],
+                        valor: valor
+                    });
+                }
+
+                return eventos;
+            }, []);
+        }
+
+        function renderizarEventos() {
+            var eventos = obterEventos();
+            listaEventos.replaceChildren();
+            totalEventos.textContent = eventos.length + (eventos.length === 1 ? ' evento' : ' eventos');
+
+            if (eventos.length === 0) {
+                var vazio = document.createElement('p');
+                vazio.className = 'eventos-vazio';
+                vazio.textContent = 'Nenhum alerta ou alerta crítico no período.';
+                listaEventos.appendChild(vazio);
+                return;
+            }
+
+            eventos.slice().reverse().forEach(function(evento) {
+                var item = document.createElement('article');
+                item.className = 'evento ' + evento.chave;
+
+                var informacoes = document.createElement('div');
+                var titulo = document.createElement('strong');
+                titulo.textContent = evento.rotulo;
+                var periodo = document.createElement('p');
+                periodo.textContent = evento.horario;
+
+                var pico = document.createElement('b');
+                pico.textContent = evento.valor.toLocaleString('pt-BR') + ' ppm';
+
+                informacoes.append(titulo, periodo);
+                item.append(informacoes, pico);
+                listaEventos.appendChild(item);
+            });
+        }
 
         function atualizarIndicadores() {
             var valor = leituras[leituras.length - 1];
             var maiorValor = Math.max.apply(null, leituras);
-
-            var rotulo;
-            var descricao;
-            var chave;
-
-            // Regra definida:
-            // Exatamente 0 = Estável
-            // Acima de 0 e abaixo de 20 = Alerta
-            // 20 ou mais = Alerta Crítico
-
-            if (valor === 0) {
-                rotulo = 'Estável';
-                descricao = 'Manter rotina';
-                chave = 'stable';
-
-            } else if (valor < 20) {
-                rotulo = 'Alerta';
-                descricao = 'Verificar área';
-                chave = 'attention';
-
-            } else {
-                rotulo = 'Alerta Crítico';
-                descricao = 'Evacuar área';
-                chave = 'critical';
-            }
+            var estado = obterEstado(valor);
 
             valorAtual.childNodes[0].textContent =
                 valor.toLocaleString('pt-BR') + ' ';
 
-            indicadorAtual.textContent = rotulo;
-            indicadorAtual.dataset.state = chave;
-
-            estadoNivel.textContent = rotulo;
-            estadoNivel.dataset.state = chave;
-
-            estadoDescricao.textContent = descricao;
+            estadoNivel.textContent = estado.rotulo;
+            estadoNivel.dataset.state = estado.chave;
+            estadoNivel.closest('.estado').dataset.state = estado.chave;
+            estadoDescricao.textContent = estado.descricao;
 
             picoAtual.textContent = 'Pico de ' +
                 maiorValor.toLocaleString('pt-BR') +
                 ' ppm';
+            picoAtual.dataset.state = obterEstado(maiorValor).chave;
+
+            renderizarEventos();
         }
 
         // Executa apenas uma vez.

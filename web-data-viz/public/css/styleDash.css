@@ -78,7 +78,15 @@ main {
     background: #fff;
     border: 1px solid #e5ece8;
     border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(24, 55, 41, 0.04);
+    box-shadow: 0 8px 24px rgba(24, 55, 41, 0.06);
+    transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+.dashboard-page .cards > .card:hover,
+.grafico-card:hover,
+.eventos:hover {
+    box-shadow: 0 12px 30px rgba(24, 55, 41, 0.09);
+    transform: translateY(-2px);
 }
 
 .dashboard-page .card {
@@ -90,6 +98,11 @@ main {
     display: block;
     align-content: initial;
     text-align: left;
+}
+
+.dashboard-page .cards > .card {
+    min-height: 148px;
+    padding: 16px 18px;
 }
 
 .card-top,
@@ -197,16 +210,18 @@ main {
     background: #edf1ef;
 }
 
-.linha3 {
-    height: 0.5px;
-    margin: 52px 0 0;
-    background: #edf1ef;
+.dashboard-page .card.estado {
+    display: flex;
+    flex-direction: column;
 }
 
-#estadoDescricao {
-    font-size: 11px;
+.estado-descricao {
+    width: 100%;
+    margin: auto 0 0;
+    padding-top: 10px;
+    border-top: 1px solid #edf1ef;
     color: #78857e;
-    padding: 16px 12px 12px;
+    font-size: 12px;
 }
 
 .card > small {
@@ -218,7 +233,7 @@ main {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin: 10px 0 6px;
+    margin: 12px 0 10px;
     padding: 6px 12px;
     border-radius: 20px;
     font-size: 16px;
@@ -393,6 +408,26 @@ main {
     font-weight: 700;
 }
 
+.pico {
+    color: #087744;
+    background: #eaf5ef;
+}
+
+.pico[data-state="attention"] {
+    color: #a66a05;
+    background: #fff4dc;
+}
+
+.pico[data-state="critical"] {
+    color: #bf202d;
+    background: #fff0f1;
+}
+
+.eventos-topo > span {
+    color: #52635a;
+    background: #f0f4f2;
+}
+
 .grafico {
     position: relative;
     flex: 1;
@@ -447,12 +482,21 @@ main {
     margin-bottom: 8px;
 }
 
+.lista-eventos {
+    max-height: 330px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-color: #cbd8d1 transparent;
+    scrollbar-width: thin;
+}
+
 .evento {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    padding: 7px 0;
+    min-height: 52px;
+    padding: 9px 2px;
     border-top: 1px solid #edf1ef;
 }
 
@@ -472,24 +516,36 @@ main {
     white-space: nowrap;
 }
 
-.evento.alerta-alto-evento strong,
-.evento.alerta-alto-evento b {
-    color: #c94a13;
+.evento.critical strong,
+.evento.critical b {
+    color: #bf202d;
 }
 
-.evento.atencao-evento strong,
-.evento.atencao-evento b {
+.evento.attention strong,
+.evento.attention b {
     color: #ad6a00;
+}
+
+.evento b {
+    font-variant-numeric: tabular-nums;
+}
+
+.eventos-vazio {
+    margin: 0;
+    padding: 22px 4px;
+    color: #78857e;
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
 }
 
 .historico {
     margin-top: 3px;
     padding-top: 8px;
     border-top: 1px solid #edf1ef;
-    color: #087f5b;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
+    color: #78857e;
+    font-size: 10px;
+    line-height: 1.5;
 }
 
 @media (max-width: 900px) {
@@ -550,7 +606,7 @@ main {
         gap: 12px;
     }
 
-    .dashboard-page .card {
+    .dashboard-page .cards > .card {
         min-height: auto;
     }
 
