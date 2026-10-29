@@ -1243,3 +1243,10 @@ footer {
         padding: 18px;
     }
 }
+.botao_enviar {
+    background: #44749D;
+    color: white;
+    width:  70px;
+    height: 30px;
+    border-radius: 50px;
+}
