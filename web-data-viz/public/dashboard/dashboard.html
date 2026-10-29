@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -65,7 +64,11 @@
                     5
                     <small>ppm</small>
                 </div>
-                
+
+                <div class="indicador" id="indicadorAtual" data-state="attention">
+                    Alerta
+                </div>
+
                 <div class="linha2"></div>
                 <small>Leitura estática de demonstração</small>
             </div>
@@ -230,15 +233,16 @@
             </div>
         </div>
 
-    <div class="copyright">
-        <span class="texto-copy">© 2026 AmoniaSense Systems. Todos os direitos reservados.</span>
-        <span class="texto-normas">Desenvolvido sob normas NR-36 e NR-15.</span>
-    </div>
-</footer>
+        <div class="copyright">
+            <span class="texto-copy">
+                © 2026 AmoniaSense Systems. Todos os direitos reservados.
+            </span>
 
-
-
-
+            <span class="texto-normas">
+                Desenvolvido sob normas NR-36 e NR-15.
+            </span>
+        </div>
+    </footer>
 
     <script>
         // ==========================================
@@ -281,15 +285,38 @@
                     labels: horarios,
 
                     datasets: [{
-                        label: 'Gás',
-                        borderColor: '#087f5b',
+                        label: 'Amônia (PPM)',
+                        data: leituras,
+
+                        borderColor: '#20a36b',
                         borderWidth: 3,
                         tension: 0.3,
-                        pointRadius: 5,
+
+                        pointRadius: 3,
+                        pointHoverRadius: 6,
                         pointBackgroundColor: '#ffffff',
-                        pointBorderWidth: 3,
-                        fill: false,
-                        data: []
+                        pointBorderColor: '#20a36b',
+                        pointBorderWidth: 2,
+
+                        fill: true,
+
+                        // 0 = verde; acima de 0 e abaixo de 20 = amarelo;
+                        // 20 ou mais = vermelho.
+                        segment: {
+                            borderColor: function(context) {
+                                var valor = context.p1.parsed.y;
+
+                                if (valor >= 20) {
+                                    return '#df2337';
+                                }
+
+                                if (valor > 0) {
+                                    return '#d49a2a';
+                                }
+
+                                return '#20a36b';
+                            }
+                        }
                     }]
                 },
 
