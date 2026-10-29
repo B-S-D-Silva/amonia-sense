@@ -18,14 +18,11 @@ void loop() {
     float rs = RL * (1023.0 - valorSensor) / valorSensor;
     float razao = rs / R0;
     ppm = CURVA_A * pow(razao, CURVA_B);
-    ppm = ppm - 80;
-
-  if (ppm < 0){
-    ppm = 0;
-  }
   }
 
+  Serial.print("Valor de Saída do Sensor: ");
   Serial.print(valorSensor);
+  Serial.print(" -> ppm: ");
   Serial.println(ppm);
 
   delay(1000);
