@@ -1160,6 +1160,281 @@ footer {
     display: none;
 }
 
+/* SOLUÇÕES */
+
+.sol-topo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    padding: 150px 8% 80px;
+}
+
+.sol-topo-texto {
+    width: 50%;
+}
+
+.sol-etiqueta {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 20px;
+    background-color: #c8d6e1;
+    color: #44749D;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 15px;
+}
+
+.sol-topo h1 {
+    color: #44749D;
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+
+.sol-topo-texto p {
+    color: #777;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.sol-painel {
+    width: 40%;
+    padding: 35px;
+    background-color: #f1f1f1;
+    border: 1px solid #d0ccc5;
+    border-radius: 15px;
+}
+
+.sol-painel-topo {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    color: #44749D;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.sol-ativo {
+    color: #777;
+    font-weight: 400;
+}
+
+/* Bolinha verde antes da palavra "Ativo" */
+.sol-ativo::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background-color: #2ecc71;
+}
+
+.sol-painel .sol-item {
+    margin-top: 20px;
+}
+
+/* ---------- ITEM COM ÍCONE (usado no painel e na lista) ---------- */
+
+.sol-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.sol-item h3 {
+    font-size: 15px;
+}
+
+.sol-item p {
+    margin-top: 4px;
+    color: #777;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* Quadradinho do ícone (azul claro) */
+.sol-icone {
+    flex-shrink: 0;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #c8d6e1;
+    color: #44749D;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+/* Bolinha do ícone (azul escuro) */
+.sol-icone-redondo {
+    width: 35px;
+    height: 35px;
+    background-color: #44749D;
+    color: #FFFFFF;
+    border-radius: 50%;
+    font-size: 14px;
+}
+
+.sol-titulo {
+    text-align: center;
+}
+
+.sol-titulo-esquerda {
+    text-align: left;
+}
+
+.sol-titulo h2 {
+    font-size: 30px;
+    margin: 15px 0;
+}
+
+.sol-titulo p {
+    max-width: 600px;
+    margin: 0 auto;
+    color: #777;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.sol-contexto {
+    padding: 80px 8%;
+    background-color: #f1f1f1;
+}
+
+.sol-contexto-conteudo {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-top: 35px;
+}
+
+.sol-texto-card {
+    width: 55%;
+    padding: 35px;
+    background-color: #FFFFFF;
+    border: 1px solid #d0ccc5;
+    border-radius: 15px;
+}
+
+.sol-texto-card h3 {
+    margin-bottom: 20px;
+    color: #44749D;
+    font-size: 13px;
+}
+
+.sol-texto-card p {
+    margin-bottom: 15px;
+    color: #777;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.sol-texto-card b {
+    color: #1A2A3A;
+}
+
+.sol-lista {
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.sol-specs {
+    padding: 80px 8%;
+}
+
+.sol-specs-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 45px;
+}
+
+.sol-spec {
+    padding: 25px;
+    background-color: #FFFFFF;
+    border: 1px solid #d0ccc5;
+    border-radius: 12px;
+}
+
+.sol-spec small {
+    display: block;
+    color: #44749D;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.sol-spec h3 {
+    margin: 12px 0 8px;
+    font-size: 22px;
+}
+
+.sol-spec p {
+    color: #777;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.sol-beneficios {
+    padding: 80px 8%;
+    background-color: #f1f1f1;
+}
+
+.sol-beneficios-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 900px;
+    margin: 45px auto 0;
+}
+
+.sol-beneficio {
+    padding: 25px;
+    background-color: #FFFFFF;
+    border: 1px solid #d0ccc5;
+    border-radius: 12px;
+}
+
+.sol-beneficio .sol-icone {
+    width: 35px;
+    height: 35px;
+    margin-bottom: 18px;
+    font-size: 14px;
+}
+
+.sol-beneficio h3 {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.sol-beneficio p {
+    color: #777;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+    .sol-topo,
+    .sol-contexto-conteudo {
+        flex-direction: column;
+    }
+
+    .sol-topo-texto,
+    .sol-painel,
+    .sol-texto-card,
+    .sol-lista {
+        width: 100%;
+    }
+
+    .sol-specs-cards,
+    .sol-beneficios-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
 
 /* ==========================================================
    RESPONSIVO

@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-br">
- 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/style-css-geral.css">
-    <title>Equipe</title>
+    <title>Soluções | AmoniaSense</title>
 </head>
- 
+
 <body>
+
+    <!-- MENU -->
     <header class="topbar">
         <div class="nav-shell">
- 
+
             <a class="brand" href="./index.html#inicio" aria-label="AmoniaSense - Início">
                 <img class="brand-logo" src="./assets/img/logo-transparente.png" alt="AmoniaSense">
             </a>
- 
+
             <nav class="nav-links">
                 <a href="./index.html#inicio">Início</a>
                 <a href="./index.html#solucoes">Soluções</a>
@@ -26,20 +28,222 @@
                 <a class="botao-login" href="./pagina-login.html">Entrar</a>
                 <a href="./pagina-cadastro.html">Cadastrar-se</a>
             </nav>
- 
+
         </div>
     </header>
-    
+
+
+    <!-- PARTE 1: TOPO (texto + painel do lado) -->
+    <section class="sol-topo">
+
+        <div class="sol-topo-texto">
+            <span class="sol-etiqueta">DOCUMENTAÇÃO TÉCNICA</span>
+
+            <h1>Especificações do Sensor</h1>
+
+            <p>
+                Conheça os detalhes de hardware, limites de segurança e arquitetura
+                de comunicação do protótipo IoT desenvolvido para mitigação de riscos
+                e prevenção de acidentes de trabalho com gás amônia (NH<sub>3</sub>).
+            </p>
+        </div>
+
+        <div class="sol-painel">
+
+            <div class="sol-painel-topo">
+                <span>AMONIASENSE V1.0</span>
+                <span class="sol-ativo">Ativo</span>
+            </div>
+
+            <!-- ICONES: se preferir imagem, troque o símbolo por <img src="./assets/img/seuicone.png" width="22"> -->
+            <div class="sol-item">
+                <span class="sol-icone">▣</span>
+                <div>
+                    <h3>Arduino UNO-R3</h3>
+                    <p>Módulo profissional com conexão via cabo de rede</p>
+                </div>
+            </div>
+
+            <div class="sol-item">
+                <span class="sol-icone">!</span>
+                <div>
+                    <h3>Sensor de Amônia</h3>
+                    <p>Sensor MQ-2 (Detecção de Amônia/Gases)</p>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PARTE 2: CONTEXTO DE APLICAÇÃO (fundo cinza) -->
+    <section class="sol-contexto">
+
+        <div class="sol-titulo sol-titulo-esquerda">
+            <span class="pequeno-titulo">CONTEXTO DE APLICAÇÃO</span>
+            <h2>Monitoramento em Salas de Desossa de Frigoríficos</h2>
+        </div>
+
+        <div class="sol-contexto-conteudo">
+
+            <div class="sol-texto-card">
+                <h3>FUNCIONAMENTO DA AMÔNIA NA DESOSSA</h3>
+
+                <p>
+                    A amônia líquida é amplamente utilizada como fluido refrigerante nos
+                    sistemas de refrigeração industrial de frigoríficos. Contudo, em locais
+                    confinados e de intensa atividade humana — como a <b>sala de desossa</b> —,
+                    eventuais vazamentos invisíveis representam grave risco à saúde devido
+                    à toxicidade do gás.
+                </p>
+
+                <p>
+                    O monitoramento inteligente <b>AmoniaSense</b> atua exatamente nessa zona
+                    crítica, oferecendo uma barreira de proteção tecnológica contínua, medindo
+                    a concentração do gás em tempo real para disparar contramedidas e
+                    evacuações seguras imediatamente.
+                </p>
+            </div>
+
+            <div class="sol-lista">
+
+                <div class="sol-item">
+                    <span class="sol-icone sol-icone-redondo">◷</span>
+                    <div>
+                        <h3>Tempo Real Contínuo</h3>
+                        <p>Leituras constantes sem interrupção a cada 2s, prevenindo a inalação prolongada.</p>
+                    </div>
+                </div>
+
+                <div class="sol-item">
+                    <span class="sol-icone sol-icone-redondo">✔</span>
+                    <div>
+                        <h3>Segurança do Trabalhador</h3>
+                        <p>Monitoramento focado em atender às exigências de detecção precoce e proteção à saúde nas áreas de corte.</p>
+                    </div>
+                </div>
+
+                <div class="sol-item">
+                    <span class="sol-icone sol-icone-redondo">▤</span>
+                    <div>
+                        <h3>Dashboard e Alertas Web</h3>
+                        <p>Exibição de gráficos dinâmicos e emissão de alertas na interface gráfica sempre que a concentração atingir níveis de atenção.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PARTE 3: ESPECIFICAÇÕES TÉCNICAS (6 cards) -->
+    <section class="sol-specs">
+
+        <div class="sol-titulo">
+            <span class="pequeno-titulo">ESPECIFICAÇÕES TÉCNICAS</span>
+            <h2>Hardware e Parâmetros de Operação</h2>
+            <p>
+                Detalhamento técnico do sensor, conectividade integrada e calibração de
+                segurança para ambientes de baixa temperatura e alta umidade.
+            </p>
+        </div>
+
+        <div class="sol-specs-cards">
+
+            <div class="sol-spec">
+                <small>MODELO DO SENSOR</small>
+                <h3>MQ-2</h3>
+                <p>Sensibilidade específica para gás amônia e compostos orgânicos.</p>
+            </div>
+
+            <div class="sol-spec">
+                <small>FAIXA DE MEDIÇÃO</small>
+                <h3>0 a 100 PPM</h3>
+                <p>Ideal para detectar desde pequenos vazamentos até limites perigosos.</p>
+            </div>
+
+            <div class="sol-spec">
+                <small>LIMITE DE SEGURANÇA</small>
+                <h3>20 PPM (NR-15)</h3>
+                <p>Configurado rigorosamente conforme o limite tolerável nacional.</p>
+            </div>
+
+            <div class="sol-spec">
+                <small>TEMPO DE RESPOSTA</small>
+                <h3>2 segundos</h3>
+                <p>Varredura rápida a cada 2s para emissão instantânea de alertas visuais no painel do usuário.</p>
+            </div>
+
+            <div class="sol-spec">
+                <small>CONECTIVIDADE</small>
+                <h3>Cabo de Rede Ethernet</h3>
+                <p>Conectividade de rede via cabo de rede para garantir estabilidade.</p>
+            </div>
+
+            <div class="sol-spec">
+                <small>SISTEMA DE ALERTA</small>
+                <h3>Indicador no Site</h3>
+                <p>Sinal visual e sonoro.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PARTE 4: BENEFÍCIOS REAIS (4 cards, fundo cinza) -->
+    <section class="sol-beneficios">
+
+        <div class="sol-titulo">
+            <span class="pequeno-titulo">BENEFÍCIOS REAIS</span>
+            <h2>Por que Implementar o AmoniaSense?</h2>
+        </div>
+
+        <div class="sol-beneficios-cards">
+
+            <div class="sol-beneficio">
+                <span class="sol-icone">✚</span>
+                <h3>Segurança de Vidas</h3>
+                <p>Mitigação direta do risco de asfixia, queimaduras e acidentes graves nas vias respiratórias dos colaboradores.</p>
+            </div>
+
+            <div class="sol-beneficio">
+                <span class="sol-icone">✔</span>
+                <h3>Adequação Legal (NR-36)</h3>
+                <p>Padronizar a menção para NR-36, citando a conformidade com as exigências de monitoramento contínuo em frigoríficos.</p>
+            </div>
+
+            <div class="sol-beneficio">
+                <span class="sol-icone">▼</span>
+                <h3>Redução de Danos</h3>
+                <p>Diminuição de paradas de produção por falsos alarmes ou vazamentos contidos tardiamente no frigorífico.</p>
+            </div>
+
+            <div class="sol-beneficio">
+                <span class="sol-icone">▤</span>
+                <h3>Métricas Históricas</h3>
+                <p>Geração de relatórios de auditoria e análises para a engenharia de segurança do trabalho planejar manutenções preventivas.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- RODAPÉ -->
     <footer>
         <div class="footer-conteudo">
- 
+
             <div class="coluna-logo">
                 <a class="brand" href="./index.html#inicio" aria-label="AmoniaSense - Início">
                     <img class="brand-logo" src="./assets/img/logo-transparente.png" alt="AmoniaSense">
                 </a>
                 <p>Segurança do trabalho e eficiência operacional por meio do monitoramento contínuo de gases refrigerantes no setor frigorífico.</p>
             </div>
- 
+
             <div class="colunas-direita">
                 <div>
                     <h3>NAVEGAÇÃO</h3>
@@ -47,7 +251,7 @@
                     <p><a href="./calculadora.html">Simulador Financeiro</a></p>
                     <p><a href="./equipe.html">Nossa Equipe</a></p>
                 </div>
- 
+
                 <div>
                     <h3>SUPORTE</h3>
                     <p>Documentação Técnica</p>
@@ -55,16 +259,15 @@
                     <p>+55 (11) 98765-4321</p>
                 </div>
             </div>
- 
+
         </div>
- 
+
         <div class="copyright">
             <span class="texto-copy">© 2026 AmoniaSense Systems. Todos os direitos reservados.</span>
             <span class="texto-normas">Desenvolvido sob normas NR-36 e NR-15.</span>
         </div>
     </footer>
- 
+
 </body>
- 
+
 </html>
- 
