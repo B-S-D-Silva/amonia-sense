@@ -20,10 +20,9 @@ void loop() {
     ppm = CURVA_A * pow(razao, CURVA_B);
   }
 
-  Serial.print("Valor de Saída do Sensor: ");
-  Serial.print(valorSensor);
-  Serial.print(" -> ppm: ");
-  Serial.println(ppm);
+Serial.print(valorSensor);
+Serial.print(";");
+Serial.println(ppm, 2);
 
   delay(1000);
 }

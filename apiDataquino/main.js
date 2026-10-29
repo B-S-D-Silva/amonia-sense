@@ -23,10 +23,10 @@ const serial = async (
     let poolBancoDados = mysql.createPool(
         {
             host: 'localhost',
-            user: 'root',
-            password: 'xxx*',
-            database: 'amoniaSense',
-            port: 3306
+            user: 'amoniasense',
+            password: 'AmoniaSense2026#',
+            database: 'amonia_sense',
+            port: 3307
         }
     ).promise();
 
@@ -64,31 +64,32 @@ const serial = async (
     });
 
     // processa os dados recebidos do Arduino
-    arduino.pipe(new ReadlineParser({ delimiter: '\r\n' })).on('data', async (data) => {
-        console.log(data);
-        const valores = String(data).split(';');
-        const sensorGas = parseFloat(valores[0]);
+arduino.pipe(new ReadlineParser({ delimiter: '\r\n' })).on('data', async (data) => {
+    console.log(data);
 
-        // armazena os valores dos sensores nos arrays correspondentes
+    const valores = String(data).split(';');
+    const leituraSensor = parseFloat(valores[0]);
+    const sensorGas = parseFloat(valores[1]);
+
+    if (Number.isFinite(sensorGas)) {
         valoresSensorGas.push(sensorGas);
 
         while (valoresSensorGas.length > 500) {
             valoresSensorGas.shift();
         }
 
-        // insere os dados no banco de dados (se habilitado)
         if (HABILITAR_OPERACAO_INSERIR) {
-
-            // este insert irá inserir os dados na tabela "medida"
             await poolBancoDados.execute(
                 'INSERT INTO Dado_captado (fkSensor, concentracaoAmonia) VALUES (1, ?)',
                 [sensorGas]
             );
-            console.log('valores inseridos no banco: ',   sensorGas);
 
+            console.log('Valor inserido no banco:', sensorGas);
         }
-
-    });
+    } else {
+        console.log('Erro: valor de PPM inválido:', data);
+    }
+});
 
     // evento para lidar com erros na comunicação serial
     arduino.on('error', (mensagem) => {
