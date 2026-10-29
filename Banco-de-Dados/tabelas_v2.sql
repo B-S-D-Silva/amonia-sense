@@ -68,17 +68,28 @@ INSERT INTO Empresa VALUES
 
 
 INSERT INTO Usuario VALUES
-(DEFAULT, 'Carlos Silva', '12345678900', '11999770001', 'carlos@email.com', 'Carlos/123456', '1990-05-15', 1, NULL),
-(DEFAULT, 'João Santos', '98765432100', '11999550002', 'joao@email.com', 'João/123456', '1995-08-20', 1, 1),
-(DEFAULT, 'Lucas Pereira', '32165498700', '11993490004', 'lucas@email.com', 'Lucas/123456', '1998-02-12', 1, 1),
-(DEFAULT, 'Gabriel Souza', '65498732100', '11998590005', 'gabriel@email.com', 'Gabriel/123456', '1996-11-25', 1, 1),
-(DEFAULT, 'Rafael Costa', '78912345600', '11999380006', 'rafael@email.com', 'Rafael/123456', '1992-07-18', 1, 2),
-(DEFAULT, 'Marcos Oliveira', '45678912300', '11999070003', 'marcos@email.com', 'Marcos/123456', '1988-03-10', 2, NULL),
-(DEFAULT, 'Felipe Almeida', '14725836900', '11999460007', 'felipe@email.com', 'Felipe/123456', '1999-04-05', 2, 6),
-(DEFAULT, 'Bruno Martins', '25836914700', '11991490008', 'bruno@email.com', 'Bruno/123456', '1994-09-30', 2, 6),
-(DEFAULT, 'André Lima', '36914725800', '11993890009', 'andre@email.com', 'Andre/123456', '1997-06-22', 1, 1),
-(DEFAULT, 'Pedro Henrique', '74185296300', '11996590010', 'pedro@email.com', 'Pedro/123456', '1993-12-08', 1, 2);
+(DEFAULT, 'Carlos Silva', '12345678900', '11999770001', '1990-05-15', 1, NULL),
+(DEFAULT, 'João Santos', '98765432100', '11999550002', '1995-08-20', 1, 1),
+(DEFAULT, 'Lucas Pereira', '32165498700', '11993490004', '1998-02-12', 1, 1),
+(DEFAULT, 'Gabriel Souza', '65498732100', '11998590005', '1996-11-25', 1, 1),
+(DEFAULT, 'Rafael Costa', '78912345600', '11999380006', '1992-07-18', 1, 2),
+(DEFAULT, 'Marcos Oliveira', '45678912300', '11999070003', '1988-03-10', 2, NULL),
+(DEFAULT, 'Felipe Almeida', '14725836900', '11999460007', '1999-04-05', 2, 6),
+(DEFAULT, 'Bruno Martins', '25836914700', '11991490008', '1994-09-30', 2, 6),
+(DEFAULT, 'André Lima', '36914725800', '11993890009', '1997-06-22', 1, 1),
+(DEFAULT, 'Pedro Henrique', '74185296300', '11996590010', '1993-12-08', 1, 2);
 
+INSERT INTO Login VALUES
+(DEFAULT,'carlos@email.com', 'Carlos/123456', 1),
+(DEFAULT,'joao@email.com', 'João/123456', 2),
+(DEFAULT,'lucas@email.com', 'Lucas/123456', 3),
+(DEFAULT,'gabriel@email.com', 'Gabriel/123456', 4),
+(DEFAULT,'rafael@email.com', 'Rafael/123456', 5),
+(DEFAULT,'marcos@email.com', 'Marcos/123456', 6),
+(DEFAULT,'felipe@email.com', 'Felipe/123456', 7),
+(DEFAULT,'bruno@email.com', 'Bruno/123456', 8),
+(DEFAULT,'andre@email.com', 'Andre/123456', 9),
+(DEFAULT,'pedro@email.com', 'Pedro/123456', 10);
 
 INSERT INTO Locall VALUES
 (DEFAULT, 'SP', 'São Paulo', 'Jacu-Pessegp, 1000', '03000000', 1),
