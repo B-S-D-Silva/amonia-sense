@@ -13,13 +13,19 @@ CREATE TABLE Usuario (
     nome VARCHAR(100) NOT NULL,
     documento VARCHAR(40) UNIQUE NOT NULL,
 	telefone VARCHAR(20) NOT NULL,
-	email VARCHAR(100) NOT NULL,
-	senha VARCHAR(60) NOT NULL,
     dtNasc DATE NOT NULL,
     fkEmpresa INT,
     CONSTRAINT fkEmpresaUsuario FOREIGN KEY (fkEmpresa) REFERENCES Empresa(idEmpresa),
     fkResponsavel INT, 
     CONSTRAINT fkResponsavelUsuario FOREIGN KEY (fkResponsavel) REFERENCES Usuario(idUsuario)
+);
+
+CREATE TABLE Login (
+	idLogin INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(100) NOT NULL,
+    senha VARCHAR(60) NOT NULL,
+    fkUsuario INT,
+    CONSTRAINT fkUsuarioLogin FOREIGN KEY (fkUsuario) REFERENCES Usuario(idUsuario)
 );
 
 CREATE TABLE Locall (
