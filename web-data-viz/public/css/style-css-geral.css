@@ -40,10 +40,6 @@ a {
 }
 
 
-/* ==========================================================
-   MENU (todas as páginas)
-   ========================================================== */
-
 .topbar {
     position: fixed;
     top: 0;
@@ -680,13 +676,6 @@ a {
 }
 
 
-/* ==========================================================
-   CALCULADORA
-   Cada regra aparece UMA vez. Para mudar um tamanho, edite aqui.
-   ========================================================== */
-
-/* Estrutura da página */
-
 .calculator-page {
     width: min(94%, 1120px);
     margin: 46px auto 40px;
@@ -876,7 +865,6 @@ a {
     font-size: 12px;
 }
 
-/* Resultados */
 
 .results-card {
     display: flex;
@@ -949,7 +937,6 @@ a {
     white-space: nowrap;
 }
 
-/* Painel de retorno (payback) */
 
 .payback-panel {
     display: grid;
