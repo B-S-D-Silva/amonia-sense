@@ -17,13 +17,10 @@ float calcularRs(int valorSensor) {
 void setup() {
   Serial.begin(9600);
 
-  Serial.println("Aquecendo e calibrando (mantenha em ar limpo)...");
-  delay(60000);  // aquecimento; quanto mais tempo, melhor
-
   float somaRs = 0;
   for (int i = 0; i < 50; i++) {
     int leitura = analogRead(PINO_SENSOR_MQ2);
-    if (leitura > 0) somaRs += calcularRs(leitura);
+    if (leitura >= 5) somaRs += calcularRs(leitura);
     delay(100);
   }
   R0 = (somaRs / 50.0) / RAZAO_AR_LIMPO;
@@ -41,6 +38,10 @@ void loop() {
     ppm = CURVA_A * pow(rs / R0, CURVA_B);
   }
   ppm = constrain(ppm, 0, PPM_MAXIMO);
+
+  if (ppm <= 5.0) {
+    ppm = 0.0;
+  }
 
   Serial.print("ppm: ");
   Serial.println(ppm);

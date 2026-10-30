@@ -2,21 +2,29 @@ var database = require("../database/config");
 
 function autenticar(email, senha) {
     var instrucaoSql = `
-        SELECT idUsuario AS id, nome, email, fkEmpresa AS empresaId
-        FROM Usuario
-        WHERE email = ? AND senha = ?;
+        SELECT u.idUsuario AS id, u.nome, l.email, u.fkEmpresa AS empresaId
+        FROM Usuario u
+        INNER JOIN Login l ON l.fkUsuario = u.idUsuario
+        WHERE l.email = ? AND l.senha = ?;
     `;
 
     return database.executar(instrucaoSql, [email, senha]);
 }
 
-function cadastrar(nome, documento, telefone, email, dtNasc, senha, fkEmpresa) {
-    var instrucaoSql = `
-        INSERT INTO Usuario (nome, documento, telefone, email, senha, dtNasc, fkEmpresa)
-        VALUES (?, ?, ?, ?, ?, ?, ?);
-    `;
+async function cadastrar(nome, documento, telefone, email, dtNasc, senha, fkEmpresa) {
+    var resultadoUsuario = await database.executar(`
+        INSERT INTO Usuario (nome, documento, telefone, dtNasc, fkEmpresa)
+        VALUES (?, ?, ?, ?, ?);
+    `, [nome, documento, telefone, dtNasc, fkEmpresa]);
 
-    return database.executar(instrucaoSql, [nome, documento, telefone, email, senha, dtNasc, fkEmpresa]);
+    var idUsuario = resultadoUsuario.insertId;
+
+    await database.executar(`
+        INSERT INTO Login (email, senha, fkUsuario)
+        VALUES (?, ?, ?);
+    `, [email, senha, idUsuario]);
+
+    return resultadoUsuario;
 }
 
 module.exports = {

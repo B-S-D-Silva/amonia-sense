@@ -67,9 +67,21 @@ const serial = async (
 arduino.pipe(new ReadlineParser({ delimiter: '\r\n' })).on('data', async (data) => {
     console.log(data);
 
-    const valores = String(data).split(';');
-    const leituraSensor = parseFloat(valores[0]);
-    const sensorGas = parseFloat(valores[1]);
+    const linha = String(data).trim();
+    let sensorGas;
+    let leituraSensor;
+
+    if (linha.includes(';')) {
+        const valores = linha.split(';');
+        leituraSensor = parseFloat(valores[0]);
+        sensorGas = parseFloat(valores[1]);
+    } else {
+        const leituraPpm = linha.match(/^ppm\s*[:=]?\s*([-+]?\d+(?:[.,]\d+)?)/i);
+        const leituraNumerica = linha.match(/^([-+]?\d+(?:[.,]\d+)?)/);
+        const valorTexto = leituraPpm ? leituraPpm[1] : (leituraNumerica && !/^R0\b/i.test(linha) ? leituraNumerica[1] : null);
+        sensorGas = valorTexto == null ? NaN : parseFloat(valorTexto.replace(',', '.'));
+        leituraSensor = sensorGas;
+    }
 
     if (Number.isFinite(sensorGas)) {
         valoresSensorGas.push(sensorGas);

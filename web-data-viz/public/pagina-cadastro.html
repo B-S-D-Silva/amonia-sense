@@ -74,19 +74,19 @@
             </p>
 
             <h2>NOME</h2>
-            <input type="text" placeholder="Digite seu nome" id="input_nome" autocomplete="name">
+            <input type="text" value="Laura" placeholder="Digite seu nome" id="input_nome" autocomplete="name">
 
             <h2>EMAIL</h2>
             <input type="email" placeholder="Digite seu email" id="input_cadastro" autocomplete="email">
 
             <h2>TELEFONE</h2>
-            <input type="tel" placeholder="Digite seu telefone" id="input_telefone" autocomplete="tel">
+            <input type="tel" value="11998542165" placeholder="Digite seu telefone" id="input_telefone" autocomplete="tel">
 
             <h2>DATA DE NASCIMENTO</h2>
-            <input type="date" id="input_nascimento">
+            <input type="date" value="2000-03-28" id="input_nascimento">
 
             <h2>CPF OU NÚMERO DO PASSAPORTE</h2>
-            <input type="text" placeholder="Digite seu CPF ou passaporte" id="input_documento">
+            <input type="text" value="75846589562" placeholder="Digite seu CPF ou passaporte" id="input_documento">
 
             <h2>EMPRESA</h2>
             <select id="input_empresa">
@@ -199,6 +199,8 @@
                 empresas.forEach(function (empresa) {
                     seletorEmpresa.add(new Option(empresa.nome, empresa.id));
                 });
+
+                seletorEmpresa.value = "2";
 
                 if (empresas.length === 0) {
                     mensagem.textContent = "Não há empresas cadastradas para vincular o usuário.";
