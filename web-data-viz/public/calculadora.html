@@ -190,21 +190,21 @@
               </div>
               <div class="field-row">
                 <div class="field">
-                  <label for="input_investimento"
-                    >Investimento estimado no sistema (R$)</label
+                  <label for="input_quantidade_sensores"
+                    >Quantidade de sensores</label
                   >
                   <input
-                    value="83540"
+                    value="10"
                     type="number"
-                    id="input_investimento"
-                    min="0.01"
-                    step="any"
+                    id="input_quantidade_sensores"
+                    min="1"
+                    step="1"
                     oninput="verificar()"
                     required
                   />
                   <small
-                    >Referência editável: 10 sensores a R$ 8354
-                    instalados.</small
+                    >Recomendação: 1 sensor por evaporador. Investimento
+                    estimado: R$ 8.000 por sensor.</small
                   >
                 </div>
                 <div class="field">
@@ -347,7 +347,8 @@
         let funcionarios = Number(input_funcionarios.value);
         let custoHora = Number(input_custo_hora.value);
         let percentualPerda = Number(input_fator_perda.value);
-        let investimento = Number(input_investimento.value);
+        let quantidadeSensores = Number(input_quantidade_sensores.value);
+        let investimento = quantidadeSensores * 8000;
         let ocorrenciasMes = Number(input_frequencia.value);
         let percentualEvitavel = Number(input_impacto_evitavel.value);
 
@@ -362,7 +363,8 @@
           custoHora >= 0 &&
           percentualPerda > 0 &&
           percentualPerda <= 100 &&
-          investimento > 0 &&
+          Number.isInteger(quantidadeSensores) &&
+          quantidadeSensores > 0 &&
           ocorrenciasMes > 0 &&
           percentualEvitavel > 0 &&
           percentualEvitavel <= 100
