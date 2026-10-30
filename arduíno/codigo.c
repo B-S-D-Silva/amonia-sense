@@ -6,9 +6,6 @@ const float RAZAO_AR_LIMPO = 3.6;    // Rs/R0 em ar limpo para esta curva
 const float CURVA_A = 102.2;         // curva NH3 (aproximação)
 const float CURVA_B = -2.473;
 
-// --- Limites (ppm) ---
-const float LIMITE_ALERTA = 10.0;
-const float LIMITE_CRITICO = 20.0;
 const float PPM_MAXIMO = 50.0;
 
 float R0 = 10.0;  // calculado na calibração
@@ -45,21 +42,8 @@ void loop() {
   }
   ppm = constrain(ppm, 0, PPM_MAXIMO);
 
-  const char* status;
-  if (ppm > LIMITE_CRITICO) {
-    status = "CRITICO";
-  } else if (ppm >= LIMITE_ALERTA) {
-    status = "ALERTA";
-  } else {
-    status = "ESTAVEL";
-  }
-
-  Serial.print("Valor de Saída do Sensor: ");
-  Serial.print(valorSensor);
-  Serial.print(" -> ppm: ");
-  Serial.print(ppm);
-  Serial.print(" -> Status: ");
-  Serial.println(status);
+  Serial.print("ppm: ");
+  Serial.println(ppm);
 
   delay(1000);
 }
