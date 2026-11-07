@@ -7,8 +7,6 @@
 
     <title>Monitoramento de Amônia</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <link rel="stylesheet" href="../css/style-css-geral.css">
     <link rel="stylesheet" href="../css/styleDash.css">
 </head>
@@ -37,45 +35,50 @@
 
         <div class="titulo">
             <h1>Monitoramento de amônia</h1>
-            <p>Câmara frigorífica de carnes bovinas</p>
-            <span>Veja a leitura atual e entenda os alertas.</span>
+            <p>Setor frigorífico de carnes</p>
+            <span>Acompanhamento diário · identifique os evaporadores com vazamento.</span>
         </div>
 
         <section class="cards">
 
-            <div class="card sensor">
+            <div class="card sensores">
                 <div class="card-top">
-                    <span>SENSOR CONECTADO</span>
+                    <span>EVAPORADORES MONITORADOS</span>
                 </div>
 
-                <h2>Sensor 1</h2>
-                <p>Câmara Bovinos 01</p>
-                <div class="ativo">Ativo</div>
-                <div class="linha1"></div>
-                <small>Sinal estável</small>
-            </div>
-
-            <div class="card amonia">
-                <div class="card-top">
-                    <span>AMÔNIA ATUAL</span>
-                </div>
-
-                <div class="valor" id="valorAtual">
-                    5
-                    <small>ppm</small>
+                <div class="valor">
+                    <span id="totalEvaporadores">6</span>
+                    <small>evaporadores</small>
                 </div>
                 <div class="linha2"></div>
-                <small>Leitura estática de demonstração</small>
+                <small>Todos os sensores ativos e enviando leitura.</small>
             </div>
 
-            <div class="card estado">
+            <div class="card vazamentos" id="cardVazamentos" data-state="critical">
                 <div class="card-top">
-                    <span>ESTADO DO EVAPORADOR</span>
+                    <span>EM VAZAMENTO</span>
                 </div>
 
-                <h2 id="estadoNivel" data-state="attention">Alerta</h2>
+                <div class="valor">
+                    <span id="totalVazamentos">3</span>
+                    <small>evaporadores</small>
+                </div>
+                <div class="linha2"></div>
+                <small id="listaVazamentos">
+                    Evaporador 2, Evaporador 4 e Evaporador 3.
+                </small>
+            </div>
 
-                <p class="estado-descricao" id="estadoDescricao">Verificar área</p>
+            <div class="card estado" data-state="critical">
+                <div class="card-top">
+                    <span>ESTADO GERAL</span>
+                </div>
+
+                <h2 id="estadoNivel" data-state="critical">Alerta crítico</h2>
+
+                <p class="estado-descricao" id="estadoDescricao">
+                    Evaporador 2 · Evacuar área
+                </p>
             </div>
 
         </section>
@@ -112,61 +115,19 @@
             </div>
         </section>
 
-        <section class="conteudo">
+        <section class="evaporadores-section" aria-labelledby="tituloEvaporadores">
 
-            <div class="grafico-card">
-
-                <div class="grafico-topo">
-                    <div>
-                        <h2>Leituras recentes</h2>
-                        <p>Amônia medida pelo sensor (PPM)</p>
-                    </div>
-
-                    <div class="pico" id="picoAtual">Pico de 5 ppm</div>
+            <div class="evaporadores-topo">
+                <div>
+                    <h2 id="tituloEvaporadores">Evaporadores</h2>
+                    <p>Clique em um evaporador para abrir o histórico por dia.</p>
                 </div>
 
-                <div class="grafico">
-                    <canvas id="sensorGas"></canvas>
-                </div>
-
-                <div class="legenda">
-
-                    <div class="legenda-item estavel">
-                        <span></span>
-                        Estável
-                    </div>
-
-                    <div class="legenda-item atencao-legenda">
-                        <span></span>
-                        Alerta
-                    </div>
-
-                    <div class="legenda-item critico">
-                        <span></span>
-                        Alerta Crítico
-                    </div>
-
-                </div>
+                <span class="contador-evaporadores" id="contadorEvaporadores">6 monitorados</span>
             </div>
 
-            <div class="eventos">
+            <div class="evaporadores-grid" id="listaEvaporadores"></div>
 
-                <div class="eventos-topo">
-                    <div>
-                        <h2>Relatório de alertas</h2>
-                        <p>Alertas registrados a cada captura · intervalo de 2 segundos</p>
-                    </div>
-
-                    <span id="totalEventos">0 eventos</span>
-                </div>
-
-                <div class="lista-eventos" id="listaEventos" aria-live="polite"></div>
-
-                <div class="historico">
-                    Leituras estáveis não são exibidas
-                </div>
-
-            </div>
         </section>
 
     </main>
@@ -215,288 +176,137 @@
         </div>
     </footer>
 
+    <script src="../js/dados-evaporadores.js"></script>
+
     <script>
 
-        var leituras = [
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0.2, 0.3,
-            0.5, 0.7, 0.8, 1, 1.5,
-            2, 2.5, 3, 4, 5
-        ];
+        var hoje = DadosEvaporadores.dataHojeISO();
 
-        var horarios = leituras.map(function(_, indice) {
-            var segundosDoDia = (8 * 60 * 60) + (indice * 2);
-            var horas = Math.floor(segundosDoDia / 3600) % 24;
-            var minutos = Math.floor((segundosDoDia % 3600) / 60);
-            var segundos = segundosDoDia % 60;
+        var ordemEstados = { critical: 0, attention: 1, stable: 2 };
 
-            return [horas, minutos, segundos].map(function(parte) {
-                return String(parte).padStart(2, '0');
-            }).join(':');
-        });
-
-        var valorAtual = document.getElementById('valorAtual');
+        var cardVazamentos = document.getElementById('cardVazamentos');
+        var totalEvaporadores = document.getElementById('totalEvaporadores');
+        var totalVazamentos = document.getElementById('totalVazamentos');
+        var listaVazamentos = document.getElementById('listaVazamentos');
         var estadoNivel = document.getElementById('estadoNivel');
         var estadoDescricao = document.getElementById('estadoDescricao');
-        var picoAtual = document.getElementById('picoAtual');
-        var listaEventos = document.getElementById('listaEventos');
-        var totalEventos = document.getElementById('totalEventos');
+        var listaEvaporadores = document.getElementById('listaEvaporadores');
+        var contadorEvaporadores = document.getElementById('contadorEvaporadores');
 
-        var sensorGas = new Chart(
-            document.getElementById('sensorGas').getContext('2d'),
-            {
-                type: 'line',
-
-                data: {
-                    labels: leituras.map(function() { return ''; }),
-
-                    datasets: [{
-                        label: 'Amônia (PPM)',
-                        data: leituras,
-
-                        borderColor: '#20a36b',
-                        borderWidth: 3,
-                        tension: 0.3,
-
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        pointBackgroundColor: '#ffffff',
-                        pointBorderColor: function(context) {
-                            var valor = context.raw;
-
-                            if (valor >= 20) return '#df2337';
-                            if (valor > 1) return '#d49a2a';
-                            return '#20a36b';
-                        },
-                        pointBorderWidth: 2,
-
-                        fill: true,
-                        segment: {
-                            borderColor: function(context) {
-                                var valor = context.p1.parsed.y;
-
-                                if (valor >= 20) return '#df2337';
-                                if (valor > 1) return '#d49a2a';
-                                return '#20a36b';
-                            }
-                        }
-                    }]
-                },
-
-                plugins: [{
-                    id: 'faixasDeSeguranca',
-
-            
-                    beforeDraw: function(chart) {
-                        var ctx = chart.ctx;
-                        var area = chart.chartArea;
-                        var eixoY = chart.scales.y;
-
-                        if (!area) return;
-
-                        var faixas = [
-                            {
-                                inicio: 0,
-                                fim: 1,
-                                cor: 'rgba(32, 163, 107, 0.10)'
-                            },
-                            {
-                                inicio: 1,
-                                fim: 20,
-                                cor: 'rgba(228, 167, 46, 0.12)'
-                            },
-                            {
-                                inicio: 20,
-                                fim: 25,
-                                cor: 'rgba(223, 35, 55, 0.12)'
-                            }
-                        ];
-
-                        ctx.save();
-
-                        faixas.forEach(function(faixa) {
-                            var inferior = Math.max(faixa.inicio, eixoY.min);
-                            var superior = Math.min(faixa.fim, eixoY.max);
-
-                            if (inferior >= superior) return;
-
-                            var topo = eixoY.getPixelForValue(superior);
-                            var base = eixoY.getPixelForValue(inferior);
-
-                            ctx.fillStyle = faixa.cor;
-
-                            ctx.fillRect(
-                                area.left,
-                                topo,
-                                area.right - area.left,
-                                base - topo
-                            );
-                        });
-
-                        ctx.restore();
-                    },
-
-                    beforeDatasetsDraw: function(chart) {
-                        var ctx = chart.ctx;
-                        var area = chart.chartArea;
-                        var eixoY = chart.scales.y;
-
-                        if (!area) return;
-
-                        var limites = [
-                            { valor: 1, cor: '#d49a2a' },
-                            { valor: 20, cor: '#df2337' }
-                        ];
-
-                        ctx.save();
-                        ctx.setLineDash([6, 4]);
-                        ctx.lineWidth = 2;
-
-                        limites.forEach(function(limite) {
-                            var y = eixoY.getPixelForValue(limite.valor);
-
-                            ctx.beginPath();
-                            ctx.strokeStyle = limite.cor;
-                            ctx.moveTo(area.left, y);
-                            ctx.lineTo(area.right, y);
-                            ctx.stroke();
-                        });
-
-                        ctx.restore();
-                    }
-                }],
-
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return 'Amônia: ' +
-                                        context.parsed.y.toLocaleString('pt-BR') +
-                                        ' ppm';
-                                }
-                            }
-                        }
-                    },
-
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        },
-
-                        y: {
-                            min: 0,
-                            max: 25,
-
-                            title: {
-                                display: true,
-                                text: 'PPM'
-                            },
-
-                            ticks: {
-                                stepSize: 5
-                            }
-                        }
-                    }
-                }
-            }
-        );
-
-        function obterEstado(valor) {
-            if (valor < 1) {
-                return { rotulo: 'Estável', descricao: 'Manter rotina', chave: 'stable' };
-            }
-
-            if (valor < 20) {
-                return { rotulo: 'Alerta', descricao: 'Verificar área', chave: 'attention' };
-            }
-
-            return { rotulo: 'Alerta Crítico', descricao: 'Evacuar área', chave: 'critical' };
+        function formatarLista(nomes) {
+            if (nomes.length === 1) return nomes[0];
+            return nomes.slice(0, -1).join(', ') + ' e ' + nomes[nomes.length - 1];
         }
 
-        function obterEventos() {
-            return leituras.reduce(function(eventos, valor, indice) {
-                var estado = obterEstado(valor);
+        var analises = DadosEvaporadores.evaporadores.map(function (evaporador) {
+            return {
+                evaporador: evaporador,
+                resumo: DadosEvaporadores.obterResumo(evaporador, hoje)
+            };
+        });
 
-                if (estado.chave !== 'stable') {
-                    eventos.push({
-                        chave: estado.chave,
-                        rotulo: estado.rotulo,
-                        horario: horarios[indice],
-                        valor: valor
-                    });
-                }
+        var listaOrdenada = analises.slice().sort(function (a, b) {
+            var ordemA = ordemEstados[a.resumo.estado.chave];
+            var ordemB = ordemEstados[b.resumo.estado.chave];
 
-                return eventos;
-            }, []);
-        }
+            if (ordemA !== ordemB) return ordemA - ordemB;
+            return b.resumo.atual - a.resumo.atual;
+        });
 
-        function renderizarEventos() {
-            var eventos = obterEventos();
-            listaEventos.replaceChildren();
-            totalEventos.textContent = eventos.length + (eventos.length === 1 ? ' evento' : ' eventos');
+        function atualizarResumo() {
+            var vazando = listaOrdenada.filter(function (item) {
+                return item.resumo.estado.chave !== 'stable';
+            });
 
-            if (eventos.length === 0) {
-                var vazio = document.createElement('p');
-                vazio.className = 'eventos-vazio';
-                vazio.textContent = 'Nenhum alerta ou alerta crítico no período.';
-                listaEventos.appendChild(vazio);
-                return;
+            var pior = vazando[0];
+
+            totalEvaporadores.textContent = String(analises.length);
+            totalVazamentos.textContent = String(vazando.length);
+            contadorEvaporadores.textContent = analises.length + ' monitorados';
+
+            if (vazando.length === 0) {
+                cardVazamentos.dataset.state = 'stable';
+                listaVazamentos.textContent = 'Nenhum vazamento detectado.';
+            } else {
+                cardVazamentos.dataset.state = pior.resumo.estado.chave;
+                listaVazamentos.textContent = formatarLista(
+                    vazando.map(function (item) { return item.evaporador.nome; })
+                ) + '.';
             }
 
-            eventos.slice().reverse().forEach(function(evento) {
-                var item = document.createElement('article');
-                item.className = 'evento ' + evento.chave;
+            if (pior) {
+                estadoNivel.textContent = pior.resumo.estado.rotulo;
+                estadoNivel.dataset.state = pior.resumo.estado.chave;
+                estadoDescricao.textContent = pior.evaporador.nome + ' · ' + pior.resumo.estado.acao;
+            } else {
+                estadoNivel.textContent = 'Estável';
+                estadoNivel.dataset.state = 'stable';
+                estadoDescricao.textContent = 'Manter rotina';
+            }
+        }
 
-                var informacoes = document.createElement('div');
-                var titulo = document.createElement('strong');
-                titulo.textContent = evento.rotulo;
-                var periodo = document.createElement('p');
-                periodo.textContent = evento.horario;
+        function criarCardEvaporador(evaporador, resumo) {
+            var card = document.createElement('a');
+            card.className = 'evaporador-card ' + resumo.estado.chave;
+            card.href = 'evaporador.html?id=' + evaporador.id;
 
-                var pico = document.createElement('b');
-                pico.textContent = evento.valor.toLocaleString('pt-BR') + ' ppm';
+            var topo = document.createElement('div');
+            topo.className = 'evaporador-topo';
 
-                informacoes.append(titulo, periodo);
-                item.append(informacoes, pico);
-                listaEventos.appendChild(item);
+            var identificacao = document.createElement('div');
+
+            var nome = document.createElement('h3');
+            nome.textContent = evaporador.nome;
+
+            var local = document.createElement('p');
+            local.textContent = evaporador.local + ' · ' + evaporador.sensor;
+
+            identificacao.append(nome, local);
+
+            var selo = document.createElement('span');
+            selo.className = 'sensor-badge ' + resumo.estado.chave;
+            selo.textContent = resumo.estado.rotulo;
+
+            topo.append(identificacao, selo);
+
+            var valor = document.createElement('div');
+            valor.className = 'evaporador-valor';
+            valor.textContent = DadosEvaporadores.formatarPpm(resumo.atual) + ' ';
+
+            var unidade = document.createElement('small');
+            unidade.textContent = 'ppm';
+            valor.appendChild(unidade);
+
+            var rodape = document.createElement('div');
+            rodape.className = 'evaporador-rodape';
+
+            var acao = document.createElement('span');
+            acao.className = 'evaporador-acao';
+            acao.textContent = resumo.estado.acao;
+
+            var link = document.createElement('span');
+            link.className = 'evaporador-link';
+            link.textContent = 'Ver histórico →';
+
+            rodape.append(acao, link);
+
+            card.append(topo, valor, rodape);
+            return card;
+        }
+
+        function renderizarEvaporadores() {
+            listaEvaporadores.replaceChildren();
+
+            listaOrdenada.forEach(function (item) {
+                listaEvaporadores.appendChild(
+                    criarCardEvaporador(item.evaporador, item.resumo)
+                );
             });
         }
 
-        function atualizarIndicadores() {
-            var valor = leituras[leituras.length - 1];
-            var maiorValor = Math.max.apply(null, leituras);
-            var estado = obterEstado(valor);
+        atualizarResumo();
+        renderizarEvaporadores();
 
-            valorAtual.childNodes[0].textContent =
-                valor.toLocaleString('pt-BR') + ' ';
-
-            estadoNivel.textContent = estado.rotulo;
-            estadoNivel.dataset.state = estado.chave;
-            estadoNivel.closest('.estado').dataset.state = estado.chave;
-            estadoDescricao.textContent = estado.descricao;
-
-            picoAtual.textContent = 'Pico de ' +
-                maiorValor.toLocaleString('pt-BR') +
-                ' ppm';
-            picoAtual.dataset.state = obterEstado(maiorValor).chave;
-
-            renderizarEventos();
-        }
-
-        // Executa apenas uma vez.
-        // Não utiliza API, fetch ou setInterval.
-        atualizarIndicadores();
     </script>
 
 </body>

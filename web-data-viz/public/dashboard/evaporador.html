@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Histórico do Evaporador · AmoniaSense</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="../css/style-css-geral.css">
+    <link rel="stylesheet" href="../css/styleDash.css">
+</head>
+
+<body class="dashboard-page detalhe-page">
+
+    <header class="topbar">
+        <div class="nav-shell">
+            <a class="brand" href="../index.html" aria-label="AmoniaSense - Início">
+                <img class="brand-logo" src="../assets/img/logo-transparente.png" alt="AmoniaSense">
+            </a>
+
+            <nav class="nav-links" aria-label="Navegação principal">
+                <a href="../index.html#inicio">Início</a>
+                <a href="../index.html#solucoes">Soluções</a>
+                <a href="../calculadora.html">Simulador Financeiro</a>
+                <a href="../index.html#tecnologia">Sobre</a>
+                <a href="../index.html#contato">Fale Conosco</a>
+                <a class="botao-login" href="../pagina-login.html">Entrar</a>
+                <a href="../pagina-cadastro.html">Cadastrar-se</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+
+        <div class="titulo detalhe-titulo">
+            <a class="voltar-link" href="dashboard.html">← Voltar para o painel</a>
+            <h1 id="nomeEvaporador">Evaporador 2</h1>
+            <p id="localEvaporador">Câmara Bovinos 02 · Sensor 2</p>
+            <span class="estado-inline" id="estadoEvaporador" data-state="critical">Alerta crítico</span>
+        </div>
+
+        <section class="filtro-data" aria-label="Selecionar dia">
+
+            <div class="filtro-info">
+                <span>DIA ANALISADO</span>
+                <strong id="rotuloData">Hoje · 07/11/2026</strong>
+                <small id="dataLonga">07/11/2026 · sábado</small>
+            </div>
+
+            <div class="filtro-controles">
+                <button type="button" class="nav-dia" id="diaAnterior" aria-label="Dia anterior">‹</button>
+
+                <input type="date" id="dataSelecionada" aria-label="Escolher dia">
+
+                <button type="button" class="nav-dia" id="diaSeguinte" aria-label="Próximo dia">›</button>
+
+                <button type="button" class="atalho-dia" id="btnHoje">Hoje</button>
+                <button type="button" class="atalho-dia" id="btnOntem">Ontem</button>
+            </div>
+
+        </section>
+
+        <section class="cards detalhe-cards">
+
+            <div class="card">
+                <div class="card-top">
+                    <span>LEITURA FINAL</span>
+                </div>
+
+                <div class="valor">
+                    <span id="valorFinal">24,5</span>
+                    <small>ppm</small>
+                </div>
+                <div class="linha2"></div>
+                <span class="sensor-badge critical" id="badgeFinal">Alerta crítico</span>
+            </div>
+
+            <div class="card">
+                <div class="card-top">
+                    <span>PICO DO DIA</span>
+                </div>
+
+                <div class="valor">
+                    <span id="valorPico">24,5</span>
+                    <small>ppm</small>
+                </div>
+                <div class="linha2"></div>
+                <span class="sensor-badge critical" id="badgePico">Alerta crítico</span>
+            </div>
+
+            <div class="card">
+                <div class="card-top">
+                    <span>ALERTAS NO DIA</span>
+                </div>
+
+                <div class="valor">
+                    <span id="totalAlertasDia">20</span>
+                    <small>eventos</small>
+                </div>
+                <div class="linha2"></div>
+                <small>Leituras acima de 1 ppm.</small>
+            </div>
+
+            <div class="card estado" data-state="critical">
+                <div class="card-top">
+                    <span>ESTADO DO DIA</span>
+                </div>
+
+                <h2 id="estadoDia" data-state="critical">Alerta crítico</h2>
+
+                <p class="estado-descricao" id="acaoDia">Evacuar área</p>
+            </div>
+
+        </section>
+
+        <section class="conteudo">
+
+            <div class="grafico-card">
+
+                <div class="grafico-topo">
+                    <div>
+                        <h2>Leituras do dia</h2>
+                        <p id="subtituloGrafico">Amônia medida pelo sensor (PPM)</p>
+                    </div>
+
+                    <div class="pico" id="picoAtual" data-state="critical">Pico de 24,5 ppm</div>
+                </div>
+
+                <div class="grafico">
+                    <canvas id="sensorGas"></canvas>
+                </div>
+
+                <div class="legenda">
+
+                    <div class="legenda-item estavel">
+                        <span></span>
+                        Estável
+                    </div>
+
+                    <div class="legenda-item atencao-legenda">
+                        <span></span>
+                        Alerta
+                    </div>
+
+                    <div class="legenda-item critico">
+                        <span></span>
+                        Alerta Crítico
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="eventos">
+
+                <div class="eventos-topo">
+                    <div>
+                        <h2>Alertas do dia</h2>
+                        <p id="subtituloRelatorio">Registros do evaporador selecionado</p>
+                    </div>
+
+                    <span id="totalEventos">0 eventos</span>
+                </div>
+
+                <div class="lista-eventos" id="listaEventos" aria-live="polite"></div>
+
+                <div class="historico">
+                    Leituras estáveis (abaixo de 1 ppm) não são exibidas.
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-conteudo">
+
+            <div class="coluna-logo">
+                <a class="brand" href="../index.html#inicio" aria-label="AmoniaSense - Início">
+                    <img class="brand-logo" src="../assets/img/logo-transparente.png" alt="AmoniaSense">
+                </a>
+
+                <p>
+                    Segurança do trabalho e eficiência operacional por meio do
+                    monitoramento contínuo de gases refrigerantes no setor frigorífico.
+                </p>
+            </div>
+
+            <div class="colunas-direita">
+
+                <div>
+                    <h3>NAVEGAÇÃO</h3>
+                    <p><a href="../index.html#tecnologia">Tecnologia</a></p>
+                    <p><a href="../calculadora.html">Simulador Financeiro</a></p>
+                    <p><a href="../equipe.html">👥 Nossa Equipe</a></p>
+                </div>
+
+                <div>
+                    <h3>SUPORTE</h3>
+                    <p>Documentação Técnica</p>
+                    <p>suporte@amoniasense.com.br</p>
+                    <p>+55 (11) 98765-4321</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="copyright">
+            <span class="texto-copy">
+                © 2026 AmoniaSense Systems. Todos os direitos reservados.
+            </span>
+
+            <span class="texto-normas">
+                Desenvolvido sob normas NR-36 e NR-15.
+            </span>
+        </div>
+    </footer>
+
+    <script src="../js/dados-evaporadores.js"></script>
+
+    <script>
+
+        var parametros = new URLSearchParams(window.location.search);
+        var idEvaporador = Number(parametros.get('id')) || 1;
+
+        var evaporador = DadosEvaporadores.obterEvaporador(idEvaporador) ||
+            DadosEvaporadores.evaporadores[0];
+
+        var hoje = DadosEvaporadores.dataHojeISO();
+        var limitePassado = DadosEvaporadores.adicionarDias(hoje, -29);
+        var dataSelecionada = hoje;
+        var grafico = null;
+
+        var nomeEvaporador = document.getElementById('nomeEvaporador');
+        var localEvaporador = document.getElementById('localEvaporador');
+        var estadoEvaporador = document.getElementById('estadoEvaporador');
+        var rotuloData = document.getElementById('rotuloData');
+        var dataLonga = document.getElementById('dataLonga');
+        var dataSelecionadaInput = document.getElementById('dataSelecionada');
+        var diaAnterior = document.getElementById('diaAnterior');
+        var diaSeguinte = document.getElementById('diaSeguinte');
+        var btnHoje = document.getElementById('btnHoje');
+        var btnOntem = document.getElementById('btnOntem');
+        var valorFinal = document.getElementById('valorFinal');
+        var valorPico = document.getElementById('valorPico');
+        var badgeFinal = document.getElementById('badgeFinal');
+        var badgePico = document.getElementById('badgePico');
+        var totalAlertasDia = document.getElementById('totalAlertasDia');
+        var estadoDia = document.getElementById('estadoDia');
+        var acaoDia = document.getElementById('acaoDia');
+        var picoAtual = document.getElementById('picoAtual');
+        var subtituloGrafico = document.getElementById('subtituloGrafico');
+        var subtituloRelatorio = document.getElementById('subtituloRelatorio');
+        var listaEventos = document.getElementById('listaEventos');
+        var totalEventos = document.getElementById('totalEventos');
+
+        document.title = evaporador.nome + ' · Monitoramento de amônia';
+        nomeEvaporador.textContent = evaporador.nome;
+        localEvaporador.textContent = evaporador.local + ' · ' + evaporador.sensor;
+
+        function criarGrafico() {
+            var contexto = document.getElementById('sensorGas').getContext('2d');
+
+            return new Chart(contexto, {
+                type: 'line',
+
+                data: {
+                    labels: DadosEvaporadores.horarios,
+                    datasets: [{
+                        label: 'Amônia (PPM)',
+                        data: [],
+
+                        borderColor: '#20a36b',
+                        borderWidth: 3,
+                        tension: 0.3,
+
+                        pointRadius: 3,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: function (context) {
+                            var valor = context.raw;
+
+                            if (valor >= 20) return '#df2337';
+                            if (valor > 1) return '#d49a2a';
+                            return '#20a36b';
+                        },
+                        pointBorderWidth: 2,
+
+                        fill: true,
+                        backgroundColor: 'rgba(32, 163, 107, 0.06)',
+
+                        segment: {
+                            borderColor: function (context) {
+                                var valor = context.p1.parsed.y;
+
+                                if (valor >= 20) return '#df2337';
+                                if (valor > 1) return '#d49a2a';
+                                return '#20a36b';
+                            }
+                        }
+                    }]
+                },
+
+                plugins: [{
+                    id: 'faixasDeSeguranca',
+
+                    beforeDraw: function (chart) {
+                        var ctx = chart.ctx;
+                        var area = chart.chartArea;
+                        var eixoY = chart.scales.y;
+
+                        if (!area) return;
+
+                        var faixas = [
+                            { inicio: 0, fim: 1, cor: 'rgba(32, 163, 107, 0.10)' },
+                            { inicio: 1, fim: 20, cor: 'rgba(228, 167, 46, 0.12)' },
+                            { inicio: 20, fim: eixoY.max, cor: 'rgba(223, 35, 55, 0.12)' }
+                        ];
+
+                        ctx.save();
+
+                        faixas.forEach(function (faixa) {
+                            var inferior = Math.max(faixa.inicio, eixoY.min);
+                            var superior = Math.min(faixa.fim, eixoY.max);
+
+                            if (inferior >= superior) return;
+
+                            var topo = eixoY.getPixelForValue(superior);
+                            var base = eixoY.getPixelForValue(inferior);
+
+                            ctx.fillStyle = faixa.cor;
+                            ctx.fillRect(area.left, topo, area.right - area.left, base - topo);
+                        });
+
+                        ctx.restore();
+                    },
+
+                    beforeDatasetsDraw: function (chart) {
+                        var ctx = chart.ctx;
+                        var area = chart.chartArea;
+                        var eixoY = chart.scales.y;
+
+                        if (!area) return;
+
+                        var limites = [
+                            { valor: 1, cor: '#d49a2a' },
+                            { valor: 20, cor: '#df2337' }
+                        ];
+
+                        ctx.save();
+                        ctx.setLineDash([6, 4]);
+                        ctx.lineWidth = 2;
+
+                        limites.forEach(function (limite) {
+                            var y = eixoY.getPixelForValue(limite.valor);
+
+                            ctx.beginPath();
+                            ctx.strokeStyle = limite.cor;
+                            ctx.moveTo(area.left, y);
+                            ctx.lineTo(area.right, y);
+                            ctx.stroke();
+                        });
+
+                        ctx.restore();
+                    }
+                }],
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+
+                        tooltip: {
+                            callbacks: {
+                                title: function (itens) {
+                                    return 'Horário: ' + itens[0].label;
+                                },
+                                label: function (context) {
+                                    return 'Amônia: ' +
+                                        DadosEvaporadores.formatarPpm(context.parsed.y) +
+                                        ' ppm';
+                                }
+                            }
+                        }
+                    },
+
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxTicksLimit: 8,
+                                color: '#829088',
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        },
+
+                        y: {
+                            min: 0,
+                            max: 25,
+
+                            title: {
+                                display: true,
+                                text: 'PPM'
+                            },
+
+                            ticks: {
+                                stepSize: 5
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderizarGrafico(resumo) {
+            if (!grafico) {
+                grafico = criarGrafico();
+            }
+
+            grafico.data.datasets[0].data = resumo.leituras;
+            grafico.options.scales.y.max = Math.max(25, Math.ceil(resumo.pico / 5) * 5);
+            grafico.update();
+        }
+
+        function renderizarEventos(resumo) {
+            listaEventos.replaceChildren();
+
+            totalEventos.textContent = resumo.alertas.length +
+                (resumo.alertas.length === 1 ? ' evento' : ' eventos');
+
+            if (resumo.alertas.length === 0) {
+                var vazio = document.createElement('p');
+                vazio.className = 'eventos-vazio';
+                vazio.textContent = 'Nenhum alerta neste dia.';
+                listaEventos.appendChild(vazio);
+                return;
+            }
+
+            resumo.alertas.slice().reverse().forEach(function (alerta) {
+                var item = document.createElement('article');
+                item.className = 'evento ' + alerta.chave;
+
+                var informacoes = document.createElement('div');
+
+                var titulo = document.createElement('strong');
+                titulo.textContent = alerta.rotulo;
+
+                var periodo = document.createElement('p');
+                periodo.textContent = alerta.horario;
+
+                informacoes.append(titulo, periodo);
+
+                var valor = document.createElement('b');
+                valor.textContent = DadosEvaporadores.formatarPpm(alerta.valor) + ' ppm';
+
+                item.append(informacoes, valor);
+                listaEventos.appendChild(item);
+            });
+        }
+
+        function renderizar() {
+            var resumo = DadosEvaporadores.obterResumo(evaporador, dataSelecionada);
+            var estado = resumo.estado;
+            var estadoPico = DadosEvaporadores.obterEstado(resumo.pico);
+            var ehHoje = dataSelecionada === hoje;
+            var ehOntem = dataSelecionada === DadosEvaporadores.adicionarDias(hoje, -1);
+
+            rotuloData.textContent = DadosEvaporadores.rotuloData(dataSelecionada) +
+                ' · ' + DadosEvaporadores.formatarDataBR(dataSelecionada);
+            dataLonga.textContent = DadosEvaporadores.formatarDataLonga(dataSelecionada);
+
+            dataSelecionadaInput.value = dataSelecionada;
+            dataSelecionadaInput.min = limitePassado;
+            dataSelecionadaInput.max = hoje;
+
+            diaAnterior.disabled = dataSelecionada <= limitePassado;
+            diaSeguinte.disabled = dataSelecionada >= hoje;
+            btnHoje.disabled = ehHoje;
+            btnOntem.disabled = ehOntem;
+
+            estadoEvaporador.textContent = estado.rotulo;
+            estadoEvaporador.dataset.state = estado.chave;
+
+            valorFinal.textContent = DadosEvaporadores.formatarPpm(resumo.atual);
+            badgeFinal.className = 'sensor-badge ' + estado.chave;
+            badgeFinal.textContent = estado.rotulo;
+
+            valorPico.textContent = DadosEvaporadores.formatarPpm(resumo.pico);
+            badgePico.className = 'sensor-badge ' + estadoPico.chave;
+            badgePico.textContent = estadoPico.rotulo;
+
+            totalAlertasDia.textContent = String(resumo.alertas.length);
+
+            estadoDia.textContent = estado.rotulo;
+            estadoDia.dataset.state = estado.chave;
+            acaoDia.textContent = estado.acao;
+
+            picoAtual.textContent = 'Pico de ' +
+                DadosEvaporadores.formatarPpm(resumo.pico) + ' ppm';
+            picoAtual.dataset.state = estadoPico.chave;
+
+            subtituloGrafico.textContent = evaporador.local + ' · ' +
+                DadosEvaporadores.rotuloData(dataSelecionada);
+            subtituloRelatorio.textContent = evaporador.nome + ' · ' +
+                DadosEvaporadores.formatarDataBR(dataSelecionada);
+
+            renderizarGrafico(resumo);
+            renderizarEventos(resumo);
+        }
+
+        function alterarDia(deslocamento) {
+            var novaData = DadosEvaporadores.adicionarDias(dataSelecionada, deslocamento);
+
+            if (novaData < limitePassado || novaData > hoje) return;
+
+            dataSelecionada = novaData;
+            renderizar();
+        }
+
+        diaAnterior.addEventListener('click', function () {
+            alterarDia(-1);
+        });
+
+        diaSeguinte.addEventListener('click', function () {
+            alterarDia(1);
+        });
+
+        btnHoje.addEventListener('click', function () {
+            dataSelecionada = hoje;
+            renderizar();
+        });
+
+        btnOntem.addEventListener('click', function () {
+            dataSelecionada = DadosEvaporadores.adicionarDias(hoje, -1);
+            renderizar();
+        });
+
+        dataSelecionadaInput.addEventListener('change', function () {
+            var valor = dataSelecionadaInput.value;
+
+            if (!valor) {
+                dataSelecionadaInput.value = dataSelecionada;
+                return;
+            }
+
+            if (valor < limitePassado) valor = limitePassado;
+            if (valor > hoje) valor = hoje;
+
+            dataSelecionada = valor;
+            renderizar();
+        });
+
+        renderizar();
+
+    </script>
+
+</body>
+</html>

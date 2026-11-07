@@ -5,41 +5,48 @@
 /*
 comandos para mysql server
 */
+CREATE DATABASE amoniaSense;
+USE amonia;
 
-CREATE DATABASE aquatech;
-
-USE aquatech;
-
-CREATE TABLE empresa (
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	razao_social VARCHAR(50),
-	cnpj CHAR(14),
-	codigo_ativacao VARCHAR(50)
+CREATE TABLE Empresa (
+    idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
+    nomeFantasia VARCHAR(45) NOT NULL,
+    cnpj VARCHAR(15) UNIQUE NOT NULL
 );
 
-CREATE TABLE usuario (
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	nome VARCHAR(50),
-	email VARCHAR(50),
-	senha VARCHAR(50),
-	fk_empresa INT,
-	FOREIGN KEY (fk_empresa) REFERENCES empresa(id)
+CREATE TABLE Usuario (
+	idUsuario INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100) NOT NULL,
+    documento VARCHAR(40) UNIQUE NOT NULL,
+	telefone VARCHAR(20) NOT NULL,
+	email VARCHAR(100) NOT NULL,
+	senha VARCHAR(60) NOT NULL,
+    dtNasc DATE NOT NULL,
+    fkEmpresa INT,
+    CONSTRAINT fkEmpresaUsuario FOREIGN KEY (fkEmpresa) REFERENCES Empresa(idEmpresa),
+    fkResponsavel INT, 
+    CONSTRAINT fkResponsavelUsuario FOREIGN KEY (fkResponsavel) REFERENCES Usuario(idUsuario)
 );
 
-CREATE TABLE aviso (
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	titulo VARCHAR(100),
-	descricao VARCHAR(150),
-	fk_usuario INT,
-	FOREIGN KEY (fk_usuario) REFERENCES usuario(id)
+CREATE TABLE Locall (
+    idLocal INT PRIMARY KEY AUTO_INCREMENT,
+    UF char(2) NOT NULL,
+    cidade VARCHAR(50) NOT NULL,
+    endereco VARCHAR(100) NOT NULL,
+    cep VARCHAR(8),
+    fkEmpresa INT,
+    CONSTRAINT fkEmpresaLocal FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idEmpresa)
 );
 
-create table aquario (
-/* em nossa regra de negócio, um aquario tem apenas um sensor */
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	descricao VARCHAR(300),
-	fk_empresa INT,
-	FOREIGN KEY (fk_empresa) REFERENCES empresa(id)
+CREATE TABLE Sensor (
+    idSensor INT PRIMARY KEY AUTO_INCREMENT,
+    modelo VARCHAR(45) NOT NULL,
+    tipo VARCHAR(45),
+    localizacao VARCHAR(50),
+    statuss VARCHAR(20),
+    CONSTRAINT chkstatus CHECK (statuss IN ('Ativo', 'Inativo', 'Manutenção')),
+    fkLocal INT,
+    CONSTRAINT fkLocalSensor FOREIGN KEY (fkLocal) REFERENCES Locall(idLocal)
 );
 
 /* esta tabela deve estar de acordo com o que está em INSERT de sua API do arduino - dat-acqu-ino */
