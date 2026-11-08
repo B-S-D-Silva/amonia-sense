@@ -5,21 +5,21 @@
         return String(hora).padStart(2, '0') + ':00';
     });
 
+    var nomesMes = [
+        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+        'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    ];
+
     var evaporadores = [
         {
             id: 1,
             nome: 'Evaporador 1',
-            local: 'Câmara Bovinos 01',
             sensor: 'Sensor 1',
-            leiturasHoje: [
-                0, 0, 0.1, 0.2, 0.2, 0.3, 0.2, 0.4, 0.3, 0.5, 0.4, 0.6,
-                0.5, 0.4, 0.3, 0.2, 0.4, 0.5, 0.6, 0.7, 0.5, 0.4, 0.6, 0.8
-            ]
+            leiturasHoje: Array(24).fill(0)
         },
         {
             id: 2,
             nome: 'Evaporador 2',
-            local: 'Câmara Bovinos 02',
             sensor: 'Sensor 2',
             leiturasHoje: [
                 0.2, 0.3, 0.5, 0.8, 1.2, 1.8, 2.5, 3.2, 4.5, 6, 8, 10,
@@ -29,42 +29,26 @@
         {
             id: 3,
             nome: 'Evaporador 3',
-            local: 'Câmara Suínos 01',
             sensor: 'Sensor 3',
-            leiturasHoje: [
-                0.1, 0.1, 0.2, 0.3, 0.4, 0.6, 0.8, 1.2, 1.6, 2.1, 2.8, 3.5,
-                4.2, 5, 5.8, 6.4, 7, 7.5, 8, 7.6, 7.1, 6.5, 6, 5.4
-            ]
+            leiturasHoje: Array(24).fill(0)
         },
         {
             id: 4,
             nome: 'Evaporador 4',
-            local: 'Câmara Frios 01',
             sensor: 'Sensor 4',
-            leiturasHoje: [
-                0.2, 0.3, 0.4, 0.5, 0.7, 1, 1.4, 1.9, 2.4, 3, 3.8, 4.5,
-                5.2, 6.1, 7, 8.2, 9, 10, 11, 12, 12.5, 13, 12.4, 11.8
-            ]
+            leiturasHoje: Array(24).fill(0)
         },
         {
             id: 5,
             nome: 'Evaporador 5',
-            local: 'Câmara Aves 01',
             sensor: 'Sensor 5',
-            leiturasHoje: [
-                0, 0.1, 0.1, 0.2, 0.2, 0.3, 0.2, 0.2, 0.3, 0.4, 0.3, 0.2,
-                0.1, 0.2, 0.3, 0.4, 0.5, 0.4, 0.3, 0.2, 0.3, 0.4, 0.3, 0.2
-            ]
+            leiturasHoje: Array(24).fill(0)
         },
         {
             id: 6,
             nome: 'Evaporador 6',
-            local: 'Antecâmara',
             sensor: 'Sensor 6',
-            leiturasHoje: [
-                0.1, 0.1, 0.2, 0.2, 0.3, 0.3, 0.2, 0.2, 0.3, 0.3, 0.2, 0.4,
-                0.3, 0.3, 0.2, 0.1, 0.2, 0.3, 0.4, 0.3, 0.2, 0.2, 0.3, 0.4
-            ]
+            leiturasHoje: Array(24).fill(0)
         }
     ];
 
@@ -112,26 +96,35 @@
         return valor.toLocaleString('pt-BR', { maximumFractionDigits: 1 });
     }
 
-    function gerarSemente(texto) {
-        var hash = 0;
+    function mesAtual() {
+        var hoje = dataHojeISO();
+        var partes = hoje.split('-').map(Number);
+        var ano = partes[0];
+        var mes = partes[1];
+        var totalDias = new Date(ano, mes, 0).getDate();
+        var primeiroDiaSemana = new Date(ano, mes - 1, 1).getDay();
+        var dias = [];
 
-        for (var i = 0; i < texto.length; i++) {
-            hash = ((hash << 5) - hash) + texto.charCodeAt(i);
-            hash |= 0;
+        for (var dia = 1; dia <= totalDias; dia++) {
+            var iso = ano + '-' +
+                String(mes).padStart(2, '0') + '-' +
+                String(dia).padStart(2, '0');
+
+            dias.push({
+                dia: dia,
+                iso: iso,
+                futuro: iso > hoje,
+                hoje: iso === hoje
+            });
         }
 
-        return hash >>> 0;
-    }
-
-    function criarGerador(semente) {
-        var estado = semente >>> 0;
-
-        return function () {
-            estado += 0x6D2B79F5;
-            var valor = estado;
-            valor = Math.imul(valor ^ (valor >>> 15), valor | 1);
-            valor ^= valor + Math.imul(valor ^ (valor >>> 7), valor | 61);
-            return ((valor ^ (valor >>> 14)) >>> 0) / 4294967296;
+        return {
+            ano: ano,
+            mes: mes,
+            nome: nomesMes[mes - 1],
+            inicio: dias[0].iso,
+            primeiroDiaSemana: primeiroDiaSemana,
+            dias: dias
         };
     }
 
@@ -140,14 +133,8 @@
             return evaporador.leiturasHoje.slice();
         }
 
-        var gerador = criarGerador(gerarSemente(evaporador.id + '|' + dataISO));
-        var fator = 0.45 + (gerador() * 1.05);
-
-        return evaporador.leiturasHoje.map(function (valor) {
-            var variacao = (gerador() - 0.5) * Math.max(0.4, valor * 0.16);
-            var leitura = valor * fator + variacao;
-
-            return Math.max(0, Math.round(leitura * 10) / 10);
+        return evaporador.leiturasHoje.map(function () {
+            return 0;
         });
     }
 
@@ -192,6 +179,25 @@
         };
     }
 
+    function obterEstadoDoDia(dataISO, evaporador) {
+        var ranking = { stable: 0, attention: 1, critical: 2 };
+        var pior = 'stable';
+        var alvos = evaporador ? [evaporador] : evaporadores;
+
+        alvos.forEach(function (item) {
+            var resumo = obterResumo(item, dataISO);
+            var chave = obterEstado(resumo.pico).chave;
+
+            if (ranking[chave] > ranking[pior]) {
+                pior = chave;
+            }
+        });
+
+        if (pior === 'critical') return obterEstado(20);
+        if (pior === 'attention') return obterEstado(1);
+        return obterEstado(0);
+    }
+
     function obterEvaporador(id) {
         var idNumerico = Number(id);
 
@@ -207,6 +213,8 @@
         obterLeituras: obterLeituras,
         obterResumo: obterResumo,
         obterEstado: obterEstado,
+        obterEstadoDoDia: obterEstadoDoDia,
+        mesAtual: mesAtual,
         dataHojeISO: dataHojeISO,
         adicionarDias: adicionarDias,
         formatarISO: formatarISO,

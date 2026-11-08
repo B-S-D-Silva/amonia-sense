@@ -38,7 +38,7 @@
         <div class="titulo detalhe-titulo">
             <a class="voltar-link" href="dashboard.html">← Voltar para o painel</a>
             <h1 id="nomeEvaporador">Evaporador 2</h1>
-            <p id="localEvaporador">Câmara Bovinos 02 · Sensor 2</p>
+            <p id="localEvaporador">Sensor 2</p>
             <span class="estado-inline" id="estadoEvaporador" data-state="critical">Alerta crítico</span>
         </div>
 
@@ -46,19 +46,21 @@
 
             <div class="filtro-info">
                 <span>DIA ANALISADO</span>
-                <strong id="rotuloData">Hoje · 07/11/2026</strong>
-                <small id="dataLonga">07/11/2026 · sábado</small>
+                <strong id="rotuloData">Hoje</strong>
+                <small id="dataLonga"></small>
             </div>
 
-            <div class="filtro-controles">
-                <button type="button" class="nav-dia" id="diaAnterior" aria-label="Dia anterior">‹</button>
+            <div class="mes-calendario">
+                <div class="mes-topo">
+                    <strong id="rotuloMes"></strong>
 
-                <input type="date" id="dataSelecionada" aria-label="Escolher dia">
+                    <div class="legenda-dias">
+                        <span class="legenda-dia attention"><i></i>Alerta</span>
+                        <span class="legenda-dia critical"><i></i>Crítico</span>
+                    </div>
+                </div>
 
-                <button type="button" class="nav-dia" id="diaSeguinte" aria-label="Próximo dia">›</button>
-
-                <button type="button" class="atalho-dia" id="btnHoje">Hoje</button>
-                <button type="button" class="atalho-dia" id="btnOntem">Ontem</button>
+                <div class="calendario" id="calendarioDias" role="group" aria-label="Dias do mês"></div>
             </div>
 
         </section>
@@ -230,8 +232,15 @@
             DadosEvaporadores.evaporadores[0];
 
         var hoje = DadosEvaporadores.dataHojeISO();
-        var limitePassado = DadosEvaporadores.adicionarDias(hoje, -29);
+        var mes = DadosEvaporadores.mesAtual();
+        var limitePassado = mes.inicio;
+        var dataParametro = parametros.get('data');
         var dataSelecionada = hoje;
+
+        if (dataParametro && dataParametro >= limitePassado && dataParametro <= hoje) {
+            dataSelecionada = dataParametro;
+        }
+
         var grafico = null;
 
         var nomeEvaporador = document.getElementById('nomeEvaporador');
@@ -239,11 +248,8 @@
         var estadoEvaporador = document.getElementById('estadoEvaporador');
         var rotuloData = document.getElementById('rotuloData');
         var dataLonga = document.getElementById('dataLonga');
-        var dataSelecionadaInput = document.getElementById('dataSelecionada');
-        var diaAnterior = document.getElementById('diaAnterior');
-        var diaSeguinte = document.getElementById('diaSeguinte');
-        var btnHoje = document.getElementById('btnHoje');
-        var btnOntem = document.getElementById('btnOntem');
+        var rotuloMes = document.getElementById('rotuloMes');
+        var calendarioDias = document.getElementById('calendarioDias');
         var valorFinal = document.getElementById('valorFinal');
         var valorPico = document.getElementById('valorPico');
         var badgeFinal = document.getElementById('badgeFinal');
@@ -259,7 +265,7 @@
 
         document.title = evaporador.nome + ' · Monitoramento de amônia';
         nomeEvaporador.textContent = evaporador.nome;
-        localEvaporador.textContent = evaporador.local + ' · ' + evaporador.sensor;
+        localEvaporador.textContent = evaporador.sensor;
 
         function criarGrafico() {
             var contexto = document.getElementById('sensorGas').getContext('2d');
@@ -469,25 +475,54 @@
             });
         }
 
+        function renderizarCalendario() {
+            rotuloMes.textContent = mes.nome + ' ' + mes.ano;
+            calendarioDias.replaceChildren();
+
+            mes.dias.forEach(function (item) {
+                var estado = DadosEvaporadores.obterEstadoDoDia(item.iso, evaporador);
+
+                var botao = document.createElement('button');
+                botao.type = 'button';
+                botao.className = 'dia-mes';
+                botao.textContent = String(item.dia);
+                botao.setAttribute('aria-label', 'Dia ' + item.dia + ' · ' + estado.rotulo);
+
+                if (!item.futuro) {
+                    botao.dataset.state = estado.chave;
+                }
+
+                if (item.hoje) {
+                    botao.classList.add('hoje');
+                }
+
+                if (item.iso === dataSelecionada) {
+                    botao.dataset.selected = 'true';
+                }
+
+                if (item.futuro) {
+                    botao.disabled = true;
+                }
+
+                botao.addEventListener('click', function () {
+                    dataSelecionada = item.iso;
+                    renderizar();
+                });
+
+                calendarioDias.appendChild(botao);
+            });
+        }
+
         function renderizar() {
             var resumo = DadosEvaporadores.obterResumo(evaporador, dataSelecionada);
             var estado = resumo.estado;
             var estadoPico = DadosEvaporadores.obterEstado(resumo.pico);
-            var ehHoje = dataSelecionada === hoje;
-            var ehOntem = dataSelecionada === DadosEvaporadores.adicionarDias(hoje, -1);
 
             rotuloData.textContent = DadosEvaporadores.rotuloData(dataSelecionada) +
                 ' · ' + DadosEvaporadores.formatarDataBR(dataSelecionada);
             dataLonga.textContent = DadosEvaporadores.formatarDataLonga(dataSelecionada);
 
-            dataSelecionadaInput.value = dataSelecionada;
-            dataSelecionadaInput.min = limitePassado;
-            dataSelecionadaInput.max = hoje;
-
-            diaAnterior.disabled = dataSelecionada <= limitePassado;
-            diaSeguinte.disabled = dataSelecionada >= hoje;
-            btnHoje.disabled = ehHoje;
-            btnOntem.disabled = ehOntem;
+            renderizarCalendario();
 
             estadoEvaporador.textContent = estado.rotulo;
             estadoEvaporador.dataset.state = estado.chave;
@@ -510,7 +545,7 @@
                 DadosEvaporadores.formatarPpm(resumo.pico) + ' ppm';
             picoAtual.dataset.state = estadoPico.chave;
 
-            subtituloGrafico.textContent = evaporador.local + ' · ' +
+            subtituloGrafico.textContent = evaporador.sensor + ' · ' +
                 DadosEvaporadores.rotuloData(dataSelecionada);
             subtituloRelatorio.textContent = evaporador.nome + ' · ' +
                 DadosEvaporadores.formatarDataBR(dataSelecionada);
@@ -518,48 +553,6 @@
             renderizarGrafico(resumo);
             renderizarEventos(resumo);
         }
-
-        function alterarDia(deslocamento) {
-            var novaData = DadosEvaporadores.adicionarDias(dataSelecionada, deslocamento);
-
-            if (novaData < limitePassado || novaData > hoje) return;
-
-            dataSelecionada = novaData;
-            renderizar();
-        }
-
-        diaAnterior.addEventListener('click', function () {
-            alterarDia(-1);
-        });
-
-        diaSeguinte.addEventListener('click', function () {
-            alterarDia(1);
-        });
-
-        btnHoje.addEventListener('click', function () {
-            dataSelecionada = hoje;
-            renderizar();
-        });
-
-        btnOntem.addEventListener('click', function () {
-            dataSelecionada = DadosEvaporadores.adicionarDias(hoje, -1);
-            renderizar();
-        });
-
-        dataSelecionadaInput.addEventListener('change', function () {
-            var valor = dataSelecionadaInput.value;
-
-            if (!valor) {
-                dataSelecionadaInput.value = dataSelecionada;
-                return;
-            }
-
-            if (valor < limitePassado) valor = limitePassado;
-            if (valor > hoje) valor = hoje;
-
-            dataSelecionada = valor;
-            renderizar();
-        });
 
         renderizar();
 

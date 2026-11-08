@@ -35,84 +35,71 @@
 
         <div class="titulo">
             <h1>Monitoramento de amônia</h1>
-            <p>Setor frigorífico de carnes</p>
-            <span>Acompanhamento diário · identifique os evaporadores com vazamento.</span>
+            <p>Sala de carnes bovinas</p>
+            <span>Selecione o dia e clique em um evaporador para ver o gráfico.</span>
         </div>
 
-        <section class="cards">
+        <section class="cards" aria-label="Resumo do dia">
 
             <div class="card sensores">
                 <div class="card-top">
-                    <span>EVAPORADORES MONITORADOS</span>
+                    <span>EVAPORADORES</span>
                 </div>
 
                 <div class="valor">
                     <span id="totalEvaporadores">6</span>
-                    <small>evaporadores</small>
+                    <small>monitorados</small>
                 </div>
                 <div class="linha2"></div>
-                <small>Todos os sensores ativos e enviando leitura.</small>
+                <small>Todos os sensores ativos.</small>
             </div>
 
-            <div class="card vazamentos" id="cardVazamentos" data-state="critical">
+            <div class="card vazamentos" id="cardVazamentos" data-state="stable">
                 <div class="card-top">
                     <span>EM VAZAMENTO</span>
                 </div>
 
                 <div class="valor">
-                    <span id="totalVazamentos">3</span>
-                    <small>evaporadores</small>
+                    <span id="totalVazamentos">0</span>
+                    <small id="unidadeVazamentos">evaporadores</small>
                 </div>
                 <div class="linha2"></div>
-                <small id="listaVazamentos">
-                    Evaporador 2, Evaporador 4 e Evaporador 3.
-                </small>
+                <small id="listaVazamentos">Nenhum vazamento detectado.</small>
             </div>
 
-            <div class="card estado" data-state="critical">
+            <div class="card estado" data-state="stable">
                 <div class="card-top">
                     <span>ESTADO GERAL</span>
                 </div>
 
-                <h2 id="estadoNivel" data-state="critical">Alerta crítico</h2>
+                <h2 id="estadoNivel" data-state="stable">Estável</h2>
 
-                <p class="estado-descricao" id="estadoDescricao">
-                    Evaporador 2 · Evacuar área
-                </p>
+                <p class="estado-descricao" id="estadoDescricao">Manter rotina</p>
             </div>
 
         </section>
 
-        <section class="card estados-leitura" aria-labelledby="tituloEstados">
+        <section class="filtro-data" aria-label="Selecionar dia">
 
-            <div class="estados-titulo">
-                <h2 id="tituloEstados">AÇÕES RECOMENDADAS</h2>
+            <div class="filtro-info">
+                <span>DIA ANALISADO</span>
+                <strong id="rotuloData">Hoje</strong>
+                <small id="dataLonga"></small>
             </div>
 
-            <div class="estados-grid">
+            <div class="mes-calendario">
+                <div class="mes-topo">
+                    <strong id="rotuloMes"></strong>
 
-                <article class="estado-leitura stable">
-                    <div class="card-top">
-                        <span>ESTÁVEL</span>
+                    <div class="legenda-dias">
+                        <span class="legenda-dia attention"><i></i>Alerta</span>
+                        <span class="legenda-dia critical"><i></i>Crítico</span>
                     </div>
-                    <h3>Manter rotina</h3>
-                </article>
+                </div>
 
-                <article class="estado-leitura attention">
-                    <div class="card-top">
-                        <span>ALERTA</span>
-                    </div>
-                    <h3>Verificar área</h3>
-                </article>
-
-                <article class="estado-leitura critical">
-                    <div class="card-top">
-                        <span>ALERTA CRÍTICO</span>
-                    </div>
-                    <h3>Evacuar área</h3>
-                </article>
-
+                <div class="calendario" id="calendarioDias" role="group" aria-label="Dias do mês"></div>
             </div>
+
         </section>
 
         <section class="evaporadores-section" aria-labelledby="tituloEvaporadores">
@@ -120,7 +107,7 @@
             <div class="evaporadores-topo">
                 <div>
                     <h2 id="tituloEvaporadores">Evaporadores</h2>
-                    <p>Clique em um evaporador para abrir o histórico por dia.</p>
+                    <p>Clique em um evaporador para ver o gráfico do dia.</p>
                 </div>
 
                 <span class="contador-evaporadores" id="contadorEvaporadores">6 monitorados</span>
@@ -180,41 +167,123 @@
 
     <script>
 
-        var hoje = DadosEvaporadores.dataHojeISO();
-
         var ordemEstados = { critical: 0, attention: 1, stable: 2 };
+
+        var hoje = DadosEvaporadores.dataHojeISO();
+        var mes = DadosEvaporadores.mesAtual();
+        var dataSelecionada = hoje;
 
         var cardVazamentos = document.getElementById('cardVazamentos');
         var totalEvaporadores = document.getElementById('totalEvaporadores');
         var totalVazamentos = document.getElementById('totalVazamentos');
+        var unidadeVazamentos = document.getElementById('unidadeVazamentos');
         var listaVazamentos = document.getElementById('listaVazamentos');
         var estadoNivel = document.getElementById('estadoNivel');
         var estadoDescricao = document.getElementById('estadoDescricao');
         var listaEvaporadores = document.getElementById('listaEvaporadores');
         var contadorEvaporadores = document.getElementById('contadorEvaporadores');
+        var rotuloData = document.getElementById('rotuloData');
+        var dataLonga = document.getElementById('dataLonga');
+        var rotuloMes = document.getElementById('rotuloMes');
+        var calendarioDias = document.getElementById('calendarioDias');
 
         function formatarLista(nomes) {
             if (nomes.length === 1) return nomes[0];
             return nomes.slice(0, -1).join(', ') + ' e ' + nomes[nomes.length - 1];
         }
 
-        var analises = DadosEvaporadores.evaporadores.map(function (evaporador) {
-            return {
-                evaporador: evaporador,
-                resumo: DadosEvaporadores.obterResumo(evaporador, hoje)
-            };
-        });
+        function renderizarCalendario() {
+            rotuloMes.textContent = mes.nome + ' ' + mes.ano;
+            calendarioDias.replaceChildren();
 
-        var listaOrdenada = analises.slice().sort(function (a, b) {
-            var ordemA = ordemEstados[a.resumo.estado.chave];
-            var ordemB = ordemEstados[b.resumo.estado.chave];
+            mes.dias.forEach(function (item) {
+                var estado = DadosEvaporadores.obterEstadoDoDia(item.iso);
 
-            if (ordemA !== ordemB) return ordemA - ordemB;
-            return b.resumo.atual - a.resumo.atual;
-        });
+                var botao = document.createElement('button');
+                botao.type = 'button';
+                botao.className = 'dia-mes';
+                botao.textContent = String(item.dia);
+                botao.setAttribute('aria-label', 'Dia ' + item.dia + ' · ' + estado.rotulo);
 
-        function atualizarResumo() {
-            var vazando = listaOrdenada.filter(function (item) {
+                if (!item.futuro) {
+                    botao.dataset.state = estado.chave;
+                }
+
+                if (item.hoje) {
+                    botao.classList.add('hoje');
+                }
+
+                if (item.iso === dataSelecionada) {
+                    botao.dataset.selected = 'true';
+                }
+
+                if (item.futuro) {
+                    botao.disabled = true;
+                }
+
+                botao.addEventListener('click', function () {
+                    dataSelecionada = item.iso;
+                    renderizar();
+                });
+
+                calendarioDias.appendChild(botao);
+            });
+        }
+
+        function criarCardEvaporador(item) {
+            var evaporador = item.evaporador;
+            var resumo = item.resumo;
+
+            var card = document.createElement('a');
+            card.className = 'evaporador-card ' + resumo.estado.chave;
+            card.href = 'evaporador.html?id=' + evaporador.id + '&data=' + dataSelecionada;
+
+            var topo = document.createElement('div');
+            topo.className = 'evaporador-topo';
+
+            var identificacao = document.createElement('div');
+
+            var nome = document.createElement('h3');
+            nome.textContent = evaporador.nome;
+
+            var sensor = document.createElement('p');
+            sensor.textContent = evaporador.sensor;
+
+            identificacao.append(nome, sensor);
+
+            var selo = document.createElement('span');
+            selo.className = 'sensor-badge ' + resumo.estado.chave;
+            selo.textContent = resumo.estado.rotulo;
+
+            topo.append(identificacao, selo);
+
+            var valor = document.createElement('div');
+            valor.className = 'evaporador-valor';
+            valor.textContent = DadosEvaporadores.formatarPpm(resumo.atual) + ' ';
+
+            var unidade = document.createElement('small');
+            unidade.textContent = 'ppm';
+            valor.appendChild(unidade);
+
+            var rodape = document.createElement('div');
+            rodape.className = 'evaporador-rodape';
+
+            var pico = document.createElement('span');
+            pico.className = 'evaporador-acao';
+            pico.textContent = 'Pico de ' + DadosEvaporadores.formatarPpm(resumo.pico) + ' ppm';
+
+            var link = document.createElement('span');
+            link.className = 'evaporador-link';
+            link.textContent = 'Ver dia →';
+
+            rodape.append(pico, link);
+
+            card.append(topo, valor, rodape);
+            return card;
+        }
+
+        function atualizarResumo(analises) {
+            var vazando = analises.filter(function (item) {
                 return item.resumo.estado.chave !== 'stable';
             });
 
@@ -222,6 +291,7 @@
 
             totalEvaporadores.textContent = String(analises.length);
             totalVazamentos.textContent = String(vazando.length);
+            unidadeVazamentos.textContent = vazando.length === 1 ? 'evaporador' : 'evaporadores';
             contadorEvaporadores.textContent = analises.length + ' monitorados';
 
             if (vazando.length === 0) {
@@ -245,67 +315,37 @@
             }
         }
 
-        function criarCardEvaporador(evaporador, resumo) {
-            var card = document.createElement('a');
-            card.className = 'evaporador-card ' + resumo.estado.chave;
-            card.href = 'evaporador.html?id=' + evaporador.id;
+        function renderizar() {
+            var analises = DadosEvaporadores.evaporadores.map(function (evaporador) {
+                return {
+                    evaporador: evaporador,
+                    resumo: DadosEvaporadores.obterResumo(evaporador, dataSelecionada)
+                };
+            });
 
-            var topo = document.createElement('div');
-            topo.className = 'evaporador-topo';
+            var listaOrdenada = analises.slice().sort(function (a, b) {
+                var ordemA = ordemEstados[a.resumo.estado.chave];
+                var ordemB = ordemEstados[b.resumo.estado.chave];
 
-            var identificacao = document.createElement('div');
+                if (ordemA !== ordemB) return ordemA - ordemB;
+                return b.resumo.atual - a.resumo.atual;
+            });
 
-            var nome = document.createElement('h3');
-            nome.textContent = evaporador.nome;
+            rotuloData.textContent = DadosEvaporadores.rotuloData(dataSelecionada) +
+                ' · ' + DadosEvaporadores.formatarDataBR(dataSelecionada);
+            dataLonga.textContent = DadosEvaporadores.formatarDataLonga(dataSelecionada);
 
-            var local = document.createElement('p');
-            local.textContent = evaporador.local + ' · ' + evaporador.sensor;
+            renderizarCalendario();
+            atualizarResumo(listaOrdenada);
 
-            identificacao.append(nome, local);
-
-            var selo = document.createElement('span');
-            selo.className = 'sensor-badge ' + resumo.estado.chave;
-            selo.textContent = resumo.estado.rotulo;
-
-            topo.append(identificacao, selo);
-
-            var valor = document.createElement('div');
-            valor.className = 'evaporador-valor';
-            valor.textContent = DadosEvaporadores.formatarPpm(resumo.atual) + ' ';
-
-            var unidade = document.createElement('small');
-            unidade.textContent = 'ppm';
-            valor.appendChild(unidade);
-
-            var rodape = document.createElement('div');
-            rodape.className = 'evaporador-rodape';
-
-            var acao = document.createElement('span');
-            acao.className = 'evaporador-acao';
-            acao.textContent = resumo.estado.acao;
-
-            var link = document.createElement('span');
-            link.className = 'evaporador-link';
-            link.textContent = 'Ver histórico →';
-
-            rodape.append(acao, link);
-
-            card.append(topo, valor, rodape);
-            return card;
-        }
-
-        function renderizarEvaporadores() {
             listaEvaporadores.replaceChildren();
 
             listaOrdenada.forEach(function (item) {
-                listaEvaporadores.appendChild(
-                    criarCardEvaporador(item.evaporador, item.resumo)
-                );
+                listaEvaporadores.appendChild(criarCardEvaporador(item));
             });
         }
 
-        atualizarResumo();
-        renderizarEvaporadores();
+        renderizar();
 
     </script>
 
