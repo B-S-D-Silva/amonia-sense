@@ -36,7 +36,7 @@
         <div class="titulo">
             <h1>Monitoramento de amônia</h1>
             <p>Sala de carnes bovinas</p>
-            <span>Selecione o dia e clique em um evaporador para ver o gráfico.</span>
+            <span>Monitoramento em tempo real. Clique em um evaporador para ver o gráfico.</span>
         </div>
 
         <section class="cards" aria-label="Resumo do dia">
@@ -47,7 +47,7 @@
                 </div>
 
                 <div class="valor">
-                    <span id="totalEvaporadores">6</span>
+                    <span id="totalEvaporadores">6/6</span>
                     <small>monitorados</small>
                 </div>
                 <div class="linha2"></div>
@@ -79,38 +79,15 @@
 
         </section>
 
-        <section class="filtro-data" aria-label="Selecionar dia">
-
-            <div class="filtro-info">
-                <span>DIA ANALISADO</span>
-                <strong id="rotuloData">Hoje</strong>
-                <small id="dataLonga"></small>
-            </div>
-
-            <div class="mes-calendario">
-                <div class="mes-topo">
-                    <strong id="rotuloMes"></strong>
-
-                    <div class="legenda-dias">
-                        <span class="legenda-dia attention"><i></i>Alerta</span>
-                        <span class="legenda-dia critical"><i></i>Crítico</span>
-                    </div>
-                </div>
-
-                <div class="calendario" id="calendarioDias" role="group" aria-label="Dias do mês"></div>
-            </div>
-
-        </section>
-
         <section class="evaporadores-section" aria-labelledby="tituloEvaporadores">
 
             <div class="evaporadores-topo">
                 <div>
                     <h2 id="tituloEvaporadores">Evaporadores</h2>
-                    <p>Clique em um evaporador para ver o gráfico do dia.</p>
+                    <p>Clique em um evaporador para ver o gráfico em tempo real.</p>
                 </div>
 
-                <span class="contador-evaporadores" id="contadorEvaporadores">6 monitorados</span>
+                <span class="contador-evaporadores" id="contadorEvaporadores">6/6 evaporadores monitorados</span>
             </div>
 
             <div class="evaporadores-grid" id="listaEvaporadores"></div>
@@ -170,8 +147,6 @@
         var ordemEstados = { critical: 0, attention: 1, stable: 2 };
 
         var hoje = DadosEvaporadores.dataHojeISO();
-        var mes = DadosEvaporadores.mesAtual();
-        var dataSelecionada = hoje;
 
         var cardVazamentos = document.getElementById('cardVazamentos');
         var totalEvaporadores = document.getElementById('totalEvaporadores');
@@ -182,52 +157,10 @@
         var estadoDescricao = document.getElementById('estadoDescricao');
         var listaEvaporadores = document.getElementById('listaEvaporadores');
         var contadorEvaporadores = document.getElementById('contadorEvaporadores');
-        var rotuloData = document.getElementById('rotuloData');
-        var dataLonga = document.getElementById('dataLonga');
-        var rotuloMes = document.getElementById('rotuloMes');
-        var calendarioDias = document.getElementById('calendarioDias');
 
         function formatarLista(nomes) {
             if (nomes.length === 1) return nomes[0];
             return nomes.slice(0, -1).join(', ') + ' e ' + nomes[nomes.length - 1];
-        }
-
-        function renderizarCalendario() {
-            rotuloMes.textContent = mes.nome + ' ' + mes.ano;
-            calendarioDias.replaceChildren();
-
-            mes.dias.forEach(function (item) {
-                var estado = DadosEvaporadores.obterEstadoDoDia(item.iso);
-
-                var botao = document.createElement('button');
-                botao.type = 'button';
-                botao.className = 'dia-mes';
-                botao.textContent = String(item.dia);
-                botao.setAttribute('aria-label', 'Dia ' + item.dia + ' · ' + estado.rotulo);
-
-                if (!item.futuro) {
-                    botao.dataset.state = estado.chave;
-                }
-
-                if (item.hoje) {
-                    botao.classList.add('hoje');
-                }
-
-                if (item.iso === dataSelecionada) {
-                    botao.dataset.selected = 'true';
-                }
-
-                if (item.futuro) {
-                    botao.disabled = true;
-                }
-
-                botao.addEventListener('click', function () {
-                    dataSelecionada = item.iso;
-                    renderizar();
-                });
-
-                calendarioDias.appendChild(botao);
-            });
         }
 
         function criarCardEvaporador(item) {
@@ -236,7 +169,7 @@
 
             var card = document.createElement('a');
             card.className = 'evaporador-card ' + resumo.estado.chave;
-            card.href = 'evaporador.html?id=' + evaporador.id + '&data=' + dataSelecionada;
+            card.href = 'evaporador.html?id=' + evaporador.id + '&data=' + hoje;
 
             var topo = document.createElement('div');
             topo.className = 'evaporador-topo';
@@ -289,10 +222,10 @@
 
             var pior = vazando[0];
 
-            totalEvaporadores.textContent = String(analises.length);
+            totalEvaporadores.textContent = analises.length + '/' + analises.length;
             totalVazamentos.textContent = String(vazando.length);
             unidadeVazamentos.textContent = vazando.length === 1 ? 'evaporador' : 'evaporadores';
-            contadorEvaporadores.textContent = analises.length + ' monitorados';
+            contadorEvaporadores.textContent = analises.length + '/' + analises.length + ' evaporadores monitorados';
 
             if (vazando.length === 0) {
                 cardVazamentos.dataset.state = 'stable';
@@ -319,7 +252,7 @@
             var analises = DadosEvaporadores.evaporadores.map(function (evaporador) {
                 return {
                     evaporador: evaporador,
-                    resumo: DadosEvaporadores.obterResumo(evaporador, dataSelecionada)
+                    resumo: DadosEvaporadores.obterResumo(evaporador, hoje)
                 };
             });
 
@@ -331,11 +264,6 @@
                 return b.resumo.atual - a.resumo.atual;
             });
 
-            rotuloData.textContent = DadosEvaporadores.rotuloData(dataSelecionada) +
-                ' · ' + DadosEvaporadores.formatarDataBR(dataSelecionada);
-            dataLonga.textContent = DadosEvaporadores.formatarDataLonga(dataSelecionada);
-
-            renderizarCalendario();
             atualizarResumo(listaOrdenada);
 
             listaEvaporadores.replaceChildren();

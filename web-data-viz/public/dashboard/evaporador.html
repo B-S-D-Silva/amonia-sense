@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Histórico do Evaporador · AmoniaSense</title>
+    <title>Monitoramento do Evaporador · AmoniaSense</title>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -39,63 +39,25 @@
             <a class="voltar-link" href="dashboard.html">← Voltar para o painel</a>
             <h1 id="nomeEvaporador">Evaporador 2</h1>
             <p id="localEvaporador">Sensor 2</p>
-            <span class="estado-inline" id="estadoEvaporador" data-state="critical">Alerta crítico</span>
+            <span class="estado-inline" id="estadoEvaporador" data-state="critical">Alerta crític</span>
         </div>
-
-        <section class="filtro-data" aria-label="Selecionar dia">
-
-            <div class="filtro-info">
-                <span>DIA ANALISADO</span>
-                <strong id="rotuloData">Hoje</strong>
-                <small id="dataLonga"></small>
-            </div>
-
-            <div class="mes-calendario">
-                <div class="mes-topo">
-                    <strong id="rotuloMes"></strong>
-
-                    <div class="legenda-dias">
-                        <span class="legenda-dia attention"><i></i>Alerta</span>
-                        <span class="legenda-dia critical"><i></i>Crítico</span>
-                    </div>
-                </div>
-
-                <div class="calendario" id="calendarioDias" role="group" aria-label="Dias do mês"></div>
-            </div>
-
-        </section>
 
         <section class="cards detalhe-cards">
 
             <div class="card">
                 <div class="card-top">
-                    <span>LEITURA FINAL</span>
+                    <span>LEITURA ATUAL</span>
                 </div>
 
                 <div class="valor">
                     <span id="valorFinal">24,5</span>
                     <small>ppm</small>
                 </div>
-                <div class="linha2"></div>
-                <span class="sensor-badge critical" id="badgeFinal">Alerta crítico</span>
             </div>
 
             <div class="card">
                 <div class="card-top">
-                    <span>PICO DO DIA</span>
-                </div>
-
-                <div class="valor">
-                    <span id="valorPico">24,5</span>
-                    <small>ppm</small>
-                </div>
-                <div class="linha2"></div>
-                <span class="sensor-badge critical" id="badgePico">Alerta crítico</span>
-            </div>
-
-            <div class="card">
-                <div class="card-top">
-                    <span>ALERTAS NO DIA</span>
+                    <span>ALERTAS DE HOJE</span>
                 </div>
 
                 <div class="valor">
@@ -108,7 +70,7 @@
 
             <div class="card estado" data-state="critical">
                 <div class="card-top">
-                    <span>ESTADO DO DIA</span>
+                    <span>ESTADO ATUAL</span>
                 </div>
 
                 <h2 id="estadoDia" data-state="critical">Alerta crítico</h2>
@@ -118,13 +80,32 @@
 
         </section>
 
+        <div class="legenda" aria-label="Legenda de estados">
+
+            <!-- <div class="legenda-item estavel">
+                <span></span>
+                Estável
+            </div>
+
+            <div class="legenda-item atencao-legenda">
+                <span></span>
+                Alerta
+            </div>
+
+            <div class="legenda-item critico">
+                <span></span>
+                Crítico
+            </div> -->
+
+        </div>
+
         <section class="conteudo">
 
             <div class="grafico-card">
 
                 <div class="grafico-topo">
                     <div>
-                        <h2>Leituras do dia</h2>
+                        <h2>Leituras em tempo real</h2>
                         <p id="subtituloGrafico">Amônia medida pelo sensor (PPM)</p>
                     </div>
 
@@ -159,7 +140,7 @@
 
                 <div class="eventos-topo">
                     <div>
-                        <h2>Alertas do dia</h2>
+                        <h2>Alertas de hoje</h2>
                         <p id="subtituloRelatorio">Registros do evaporador selecionado</p>
                     </div>
 
@@ -232,28 +213,13 @@
             DadosEvaporadores.evaporadores[0];
 
         var hoje = DadosEvaporadores.dataHojeISO();
-        var mes = DadosEvaporadores.mesAtual();
-        var limitePassado = mes.inicio;
-        var dataParametro = parametros.get('data');
-        var dataSelecionada = hoje;
-
-        if (dataParametro && dataParametro >= limitePassado && dataParametro <= hoje) {
-            dataSelecionada = dataParametro;
-        }
 
         var grafico = null;
 
         var nomeEvaporador = document.getElementById('nomeEvaporador');
         var localEvaporador = document.getElementById('localEvaporador');
         var estadoEvaporador = document.getElementById('estadoEvaporador');
-        var rotuloData = document.getElementById('rotuloData');
-        var dataLonga = document.getElementById('dataLonga');
-        var rotuloMes = document.getElementById('rotuloMes');
-        var calendarioDias = document.getElementById('calendarioDias');
         var valorFinal = document.getElementById('valorFinal');
-        var valorPico = document.getElementById('valorPico');
-        var badgeFinal = document.getElementById('badgeFinal');
-        var badgePico = document.getElementById('badgePico');
         var totalAlertasDia = document.getElementById('totalAlertasDia');
         var estadoDia = document.getElementById('estadoDia');
         var acaoDia = document.getElementById('acaoDia');
@@ -448,7 +414,7 @@
             if (resumo.alertas.length === 0) {
                 var vazio = document.createElement('p');
                 vazio.className = 'eventos-vazio';
-                vazio.textContent = 'Nenhum alerta neste dia.';
+                vazio.textContent = 'Nenhum alerta hoje.';
                 listaEventos.appendChild(vazio);
                 return;
             }
@@ -475,65 +441,15 @@
             });
         }
 
-        function renderizarCalendario() {
-            rotuloMes.textContent = mes.nome + ' ' + mes.ano;
-            calendarioDias.replaceChildren();
-
-            mes.dias.forEach(function (item) {
-                var estado = DadosEvaporadores.obterEstadoDoDia(item.iso, evaporador);
-
-                var botao = document.createElement('button');
-                botao.type = 'button';
-                botao.className = 'dia-mes';
-                botao.textContent = String(item.dia);
-                botao.setAttribute('aria-label', 'Dia ' + item.dia + ' · ' + estado.rotulo);
-
-                if (!item.futuro) {
-                    botao.dataset.state = estado.chave;
-                }
-
-                if (item.hoje) {
-                    botao.classList.add('hoje');
-                }
-
-                if (item.iso === dataSelecionada) {
-                    botao.dataset.selected = 'true';
-                }
-
-                if (item.futuro) {
-                    botao.disabled = true;
-                }
-
-                botao.addEventListener('click', function () {
-                    dataSelecionada = item.iso;
-                    renderizar();
-                });
-
-                calendarioDias.appendChild(botao);
-            });
-        }
-
         function renderizar() {
-            var resumo = DadosEvaporadores.obterResumo(evaporador, dataSelecionada);
+            var resumo = DadosEvaporadores.obterResumo(evaporador, hoje);
             var estado = resumo.estado;
             var estadoPico = DadosEvaporadores.obterEstado(resumo.pico);
-
-            rotuloData.textContent = DadosEvaporadores.rotuloData(dataSelecionada) +
-                ' · ' + DadosEvaporadores.formatarDataBR(dataSelecionada);
-            dataLonga.textContent = DadosEvaporadores.formatarDataLonga(dataSelecionada);
-
-            renderizarCalendario();
 
             estadoEvaporador.textContent = estado.rotulo;
             estadoEvaporador.dataset.state = estado.chave;
 
             valorFinal.textContent = DadosEvaporadores.formatarPpm(resumo.atual);
-            badgeFinal.className = 'sensor-badge ' + estado.chave;
-            badgeFinal.textContent = estado.rotulo;
-
-            valorPico.textContent = DadosEvaporadores.formatarPpm(resumo.pico);
-            badgePico.className = 'sensor-badge ' + estadoPico.chave;
-            badgePico.textContent = estadoPico.rotulo;
 
             totalAlertasDia.textContent = String(resumo.alertas.length);
 
@@ -545,10 +461,9 @@
                 DadosEvaporadores.formatarPpm(resumo.pico) + ' ppm';
             picoAtual.dataset.state = estadoPico.chave;
 
-            subtituloGrafico.textContent = evaporador.sensor + ' · ' +
-                DadosEvaporadores.rotuloData(dataSelecionada);
+            subtituloGrafico.textContent = evaporador.sensor + ' · Tempo real';
             subtituloRelatorio.textContent = evaporador.nome + ' · ' +
-                DadosEvaporadores.formatarDataBR(dataSelecionada);
+                DadosEvaporadores.formatarDataBR(hoje);
 
             renderizarGrafico(resumo);
             renderizarEventos(resumo);
