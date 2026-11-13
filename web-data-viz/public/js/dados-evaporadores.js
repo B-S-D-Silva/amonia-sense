@@ -15,12 +15,14 @@
             id: 1,
             nome: 'Evaporador 1',
             sensor: 'Sensor 1',
+            sede: 'São Paulo / Mooca',
             leiturasHoje: Array(24).fill(0)
         },
         {
             id: 2,
             nome: 'Evaporador 2',
             sensor: 'Sensor 2',
+            sede: 'São Paulo / Mooca',
             leiturasHoje: [
                 0.2, 0.3, 0.5, 0.8, 1.2, 1.8, 2.5, 3.2, 4.5, 6, 8, 10,
                 12, 14, 16, 18, 20, 21, 22, 23, 23.5, 24, 24, 24.5
@@ -30,24 +32,98 @@
             id: 3,
             nome: 'Evaporador 3',
             sensor: 'Sensor 3',
+            sede: 'São Paulo / Mooca',
             leiturasHoje: Array(24).fill(0)
         },
         {
             id: 4,
             nome: 'Evaporador 4',
             sensor: 'Sensor 4',
+            sede: 'São Paulo / Mooca',
             leiturasHoje: Array(24).fill(0)
         },
         {
             id: 5,
             nome: 'Evaporador 5',
             sensor: 'Sensor 5',
+            sede: 'São Paulo / Mooca',
             leiturasHoje: Array(24).fill(0)
         },
         {
             id: 6,
             nome: 'Evaporador 6',
             sensor: 'Sensor 6',
+            sede: 'São Paulo / Mooca',
+            leiturasHoje: Array(24).fill(0)
+        },
+        {
+            id: 7,
+            nome: 'Evaporador 7',
+            sensor: 'Sensor 7',
+            sede: 'São Paulo / Mooca',
+            leiturasHoje: Array(24).fill(0)
+        },
+        {
+            id: 8,
+            nome: 'Evaporador 8',
+            sensor: 'Sensor 8',
+            sede: 'São Paulo / Mooca',
+            leiturasHoje: Array(24).fill(0)
+        },
+        {
+            id: 9,
+            nome: 'Evaporador 1',
+            sensor: 'Sensor 1',
+            sede: 'São Paulo / Butantã',
+            leiturasHoje: Array(24).fill(0)
+        },
+        {
+            id: 10,
+            nome: 'Evaporador 2',
+            sensor: 'Sensor 2',
+            sede: 'São Paulo / Butantã',
+            leiturasHoje: Array(24).fill(0)
+        },
+        {
+            id: 11,
+            nome: 'Evaporador 3',
+            sensor: 'Sensor 3',
+            sede: 'São Paulo / Butantã',
+            leiturasHoje: Array(24).fill(0)
+        },
+        {
+            id: 12,
+            nome: 'Evaporador 4',
+            sensor: 'Sensor 4',
+            sede: 'São Paulo / Butantã',
+            leiturasHoje: Array(24).fill(0)
+        },
+        {
+            id: 13,
+            nome: 'Evaporador 5',
+            sensor: 'Sensor 5',
+            sede: 'São Paulo / Butantã',
+            leiturasHoje: Array(24).fill(0)
+        },
+        {
+            id: 14,
+            nome: 'Evaporador 6',
+            sensor: 'Sensor 6',
+            sede: 'São Paulo / Butantã',
+            leiturasHoje: Array(24).fill(0)
+        },
+        {
+            id: 15,
+            nome: 'Evaporador 7',
+            sensor: 'Sensor 7',
+            sede: 'São Paulo / Butantã',
+            leiturasHoje: Array(24).fill(0)
+        },
+        {
+            id: 16,
+            nome: 'Evaporador 8',
+            sensor: 'Sensor 8',
+            sede: 'São Paulo / Butantã',
             leiturasHoje: Array(24).fill(0)
         }
     ];

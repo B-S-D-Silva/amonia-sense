@@ -35,7 +35,11 @@
 
         <div class="titulo">
             <h1>Monitoramento de amônia</h1>
-            <p>Sala de carnes bovinas</p>
+            <p id="sedeSelecionada">São Paulo / Mooca</p>
+            <div class="filtro-sede">
+                <label for="seletorSede">Sede / bairro</label>
+                <select id="seletorSede" aria-label="Selecionar sede"></select>
+            </div>
             <span>Monitoramento em tempo real. Clique em um evaporador para ver o gráfico.</span>
         </div>
 
@@ -47,7 +51,7 @@
                 </div>
 
                 <div class="valor">
-                    <span id="totalEvaporadores">6/6</span>
+                    <span id="totalEvaporadores">8/8</span>
                     <small>monitorados</small>
                 </div>
                 <div class="linha2"></div>
@@ -87,7 +91,7 @@
                     <p>Clique em um evaporador para ver o gráfico em tempo real.</p>
                 </div>
 
-                <span class="contador-evaporadores" id="contadorEvaporadores">6/6 evaporadores monitorados</span>
+                <span class="contador-evaporadores" id="contadorEvaporadores">8/8 evaporadores monitorados</span>
             </div>
 
             <div class="evaporadores-grid" id="listaEvaporadores"></div>
@@ -157,6 +161,23 @@
         var estadoDescricao = document.getElementById('estadoDescricao');
         var listaEvaporadores = document.getElementById('listaEvaporadores');
         var contadorEvaporadores = document.getElementById('contadorEvaporadores');
+        var seletorSede = document.getElementById('seletorSede');
+        var sedeSelecionada = document.getElementById('sedeSelecionada');
+
+        var sedes = Array.from(new Set(DadosEvaporadores.evaporadores.map(function (evaporador) {
+            return evaporador.sede;
+        })));
+
+        sedes.forEach(function (sede) {
+            var opcao = document.createElement('option');
+            opcao.value = sede;
+            opcao.textContent = sede;
+            seletorSede.appendChild(opcao);
+        });
+
+        if (sedes.indexOf('São Paulo / Mooca') !== -1) {
+            seletorSede.value = 'São Paulo / Mooca';
+        }
 
         function formatarLista(nomes) {
             if (nomes.length === 1) return nomes[0];
@@ -249,12 +270,18 @@
         }
 
         function renderizar() {
-            var analises = DadosEvaporadores.evaporadores.map(function (evaporador) {
+            var sedeAtual = seletorSede.value;
+            var evaporadoresDaSede = DadosEvaporadores.evaporadores.filter(function (evaporador) {
+                return evaporador.sede === sedeAtual;
+            });
+            var analises = evaporadoresDaSede.map(function (evaporador) {
                 return {
                     evaporador: evaporador,
                     resumo: DadosEvaporadores.obterResumo(evaporador, hoje)
                 };
             });
+
+            sedeSelecionada.textContent = sedeAtual;
 
             var listaOrdenada = analises.slice().sort(function (a, b) {
                 var ordemA = ordemEstados[a.resumo.estado.chave];
@@ -273,6 +300,7 @@
             });
         }
 
+        seletorSede.addEventListener('change', renderizar);
         renderizar();
 
     </script>

@@ -76,6 +76,35 @@ body {
     font-size: 13px;
 }
 
+.filtro-sede {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0 8px;
+}
+
+.filtro-sede label {
+    color: #52635a;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.filtro-sede select {
+    max-width: min(390px, 70vw);
+    padding: 9px 34px 9px 12px;
+    color: #17231f;
+    background: #fff;
+    border: 1px solid #d5e0da;
+    border-radius: 9px;
+    font: inherit;
+    font-size: 13px;
+}
+
+.filtro-sede select:focus-visible {
+    outline: 3px solid rgba(32, 163, 107, 0.2);
+    border-color: #20a36b;
+}
+
 .dashboard-page .card,
 .filtro-data,
 .grafico-card,
