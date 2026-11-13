@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório diário de vazamentos · AmoniaSense</title>
+
+    <link rel="stylesheet" href="../css/style-css-geral.css">
+    <link rel="stylesheet" href="../css/styleDash.css">
+    <script src="../js/relatorios-vazamentos.js"></script>
+    <style>
+        .relatorio-voltar {
+            display: inline-flex;
+            margin-bottom: 14px;
+        }
+
+        .relatorio-cabecalho {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 18px;
+        }
+
+        .relatorio-cabecalho h1 {
+            margin: 3px 0 7px;
+            color: #17231f;
+            font-size: clamp(24px, 3vw, 32px);
+            letter-spacing: -0.7px;
+        }
+
+        .relatorio-cabecalho p {
+            margin: 0;
+            color: #65736c;
+            font-size: 14px;
+        }
+
+        .relatorio-tipo {
+            color: #74827b;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .estado-relatorio {
+            flex: 0 0 auto;
+            padding: 8px 12px;
+            color: #087744;
+            background: #eaf5ef;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .estado-relatorio[data-state="alert"] {
+            color: #a52e32;
+            background: #fff0f1;
+        }
+
+        .resumo-relatorio {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .resumo-item {
+            min-width: 0;
+            padding: 16px 18px;
+            background: #fff;
+            border: 1px solid #e5ece8;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(24, 55, 41, 0.05);
+        }
+
+        .resumo-item span {
+            display: block;
+            color: #74827b;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .resumo-item strong {
+            display: block;
+            margin-top: 8px;
+            color: #17231f;
+            font-size: clamp(22px, 3vw, 28px);
+            line-height: 1.1;
+        }
+
+        .resumo-item small {
+            color: #65736c;
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        .ocorrencias-card {
+            padding: 18px;
+            background: #fff;
+            border: 1px solid #e5ece8;
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(24, 55, 41, 0.05);
+        }
+
+        .ocorrencias-topo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .ocorrencias-topo h2 {
+            margin: 0 0 4px;
+            color: #17231f;
+            font-size: 17px;
+        }
+
+        .ocorrencias-topo p {
+            margin: 0;
+            color: #829088;
+            font-size: 12px;
+        }
+
+        .contador-ocorrencias {
+            flex: 0 0 auto;
+            padding: 6px 9px;
+            color: #52635a;
+            background: #f0f4f2;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .lista-vazamentos {
+            display: grid;
+            gap: 10px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .vazamento-item {
+            padding: 15px;
+            background: #fffafa;
+            border: 1px solid #f0dedd;
+            border-radius: 12px;
+        }
+
+        .vazamento-topo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .identificacao-sensor {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .numero-ocorrencia {
+            display: grid;
+            place-items: center;
+            width: 36px;
+            height: 36px;
+            color: #a52e32;
+            background: #fdeceb;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .identificacao-sensor small {
+            display: block;
+            margin-bottom: 2px;
+            color: #829088;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+        }
+
+        .identificacao-sensor h3 {
+            margin: 0;
+            color: #17231f;
+            font-size: 14px;
+        }
+
+        .duracao-vazamento {
+            padding: 7px 10px;
+            color: #a52e32;
+            background: #fdeceb;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .linha-horarios {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            align-items: center;
+            gap: 8px;
+            width: 50%;
+            margin-inline: auto;
+            padding: 11px 12px;
+            background: #fff;
+            border: 1px solid #f0e9e7;
+            border-radius: 10px;
+        }
+
+        .horario-ponto {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .horario-ponto:last-child {
+            justify-content: flex-end;
+        }
+
+        .horario-ponto i {
+            width: 9px;
+            height: 9px;
+            background: #df5b52;
+            border: 2px solid #fdeceb;
+            border-radius: 50%;
+            box-sizing: content-box;
+        }
+
+        .horario-ponto.fim i {
+            background: #2f6b4f;
+            border-color: #e8f2ec;
+        }
+
+        .horario-ponto small {
+            display: block;
+            color: #829088;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+        }
+
+        .horario-ponto strong {
+            display: block;
+            margin-top: 2px;
+            color: #17231f;
+            font-size: 14px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .sem-vazamentos {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            color: #087744;
+            background: #f0f7f3;
+            border: 1px solid #dcece2;
+            border-radius: 12px;
+        }
+
+        .sem-vazamentos strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .sem-vazamentos p {
+            margin: 0;
+            color: #65736c;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .nota-simulacao {
+            margin: 12px 2px 0;
+            color: #829088;
+            font-size: 11px;
+        }
+
+        .erro-relatorio {
+            padding: 16px;
+            color: #8d292e;
+            background: #fff0f1;
+            border: 1px solid #f3cdd0;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 640px) {
+            .relatorio-cabecalho {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .resumo-relatorio {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .resumo-item {
+                padding: 13px 15px;
+            }
+
+            .resumo-item strong {
+                margin-top: 5px;
+            }
+
+            .ocorrencias-card {
+                padding: 14px;
+            }
+
+            .linha-horarios {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="dashboard-page detalhe-page">
+    <header class="topbar">
+        <div class="nav-shell">
+            <a class="brand" href="../index.html" aria-label="AmoniaSense - Início">
+                <img class="brand-logo" src="../assets/img/logo-transparente.png" alt="AmoniaSense">
+            </a>
+            <nav class="nav-links" aria-label="Navegação principal">
+                <a href="../index.html#inicio">Início</a>
+                <a href="dashboard.html">Monitoramento diário</a>
+                <a href="dashboard_mensal.html">Monitoramento mensal</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <a class="voltar-link relatorio-voltar" id="voltarMensal" href="dashboard_mensal2.html">
+            ← Voltar ao relatório mensal
+        </a>
+
+        <header class="relatorio-cabecalho" id="cabecalhoRelatorio" hidden>
+            <div>
+                <span class="relatorio-tipo">Relatório diário · simulação</span>
+                <h1 id="dataRelatorio"></h1>
+                <p>Sala de carnes bovinas</p>
+            </div>
+            <span class="estado-relatorio" id="estadoRelatorio"></span>
+        </header>
+
+        <div class="erro-relatorio" id="erroRelatorio" role="alert" hidden>
+            Data ausente ou inválida. Volte ao relatório mensal e selecione um dia.
+        </div>
+
+        <div id="conteudoRelatorio" hidden>
+            <section class="resumo-relatorio" aria-label="Resumo do dia">
+                <article class="resumo-item">
+                    <span>Ocorrências</span>
+                    <strong id="totalOcorrencias">0</strong>
+                </article>
+                <article class="resumo-item">
+                    <span>Duração total</span>
+                    <strong id="duracaoTotal">0 <small>min</small></strong>
+                </article>
+                <article class="resumo-item">
+                    <span>Sensores envolvidos</span>
+                    <strong id="sensoresEnvolvidos">0</strong>
+                </article>
+            </section>
+
+            <section class="ocorrencias-card" aria-labelledby="tituloOcorrencias">
+                <div class="ocorrencias-topo">
+                    <div>
+                        <h2 id="tituloOcorrencias">Ocorrências registradas</h2>
+                        <p id="descricaoOcorrencias"></p>
+                    </div>
+                    <span class="contador-ocorrencias" id="contadorOcorrencias"></span>
+                </div>
+
+                <ol class="lista-vazamentos" id="listaVazamentos"></ol>
+
+                <div class="sem-vazamentos" id="semVazamentos" hidden>
+                    <div aria-hidden="true">✓</div>
+                    <div>
+                        <strong>Nenhum vazamento detectado</strong>
+                        <p>Não foram registradas ocorrências neste dia.</p>
+                    </div>
+                </div>
+            </section>
+
+            <p class="nota-simulacao">Relatório demonstrativo com dados fictícios para simulação.</p>
+        </div>
+    </main>
+
+    <script>
+        var parametros = new URLSearchParams(window.location.search);
+        var dataISO = parametros.get('data');
+        var relatorio = RelatoriosVazamentos.obterDia(dataISO);
+
+        if (!relatorio) {
+            document.getElementById('erroRelatorio').hidden = false;
+        } else {
+            var partesData = dataISO.split('-').map(Number);
+            var data = new Date(partesData[0], partesData[1] - 1, partesData[2]);
+            var dataFormatada = new Intl.DateTimeFormat('pt-BR', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            }).format(data);
+            var temVazamento = relatorio.vazamentos.length > 0;
+            var sensores = relatorio.vazamentos.map(function (vazamento) {
+                return vazamento.sensor;
+            }).filter(function (sensor, indice, todos) {
+                return todos.indexOf(sensor) === indice;
+            });
+
+            document.getElementById('cabecalhoRelatorio').hidden = false;
+            document.getElementById('conteudoRelatorio').hidden = false;
+            document.getElementById('dataRelatorio').textContent =
+                dataFormatada.charAt(0).toUpperCase() + dataFormatada.slice(1);
+            document.title = 'Relatório de ' + dataISO + ' · AmoniaSense';
+
+            document.getElementById('voltarMensal').href =
+                'dashboard_mensal2.html?mes=' + dataISO.slice(0, 7);
+            document.getElementById('estadoRelatorio').textContent =
+                temVazamento ? 'Vazamento detectado' : 'Sem vazamento';
+            document.getElementById('estadoRelatorio').dataset.state =
+                temVazamento ? 'alert' : 'stable';
+
+            document.getElementById('totalOcorrencias').textContent =
+                String(relatorio.vazamentos.length);
+            document.getElementById('duracaoTotal').innerHTML =
+                RelatoriosVazamentos.formatarDuracao(relatorio.duracaoTotalMinutos);
+            document.getElementById('sensoresEnvolvidos').textContent =
+                String(sensores.length);
+            document.getElementById('descricaoOcorrencias').textContent =
+                temVazamento ? 'Detalhamento por sensor e horário de detecção.' :
+                    'Resumo das detecções deste dia.';
+            document.getElementById('contadorOcorrencias').textContent =
+                relatorio.vazamentos.length +
+                (relatorio.vazamentos.length === 1 ? ' ocorrência' : ' ocorrências');
+
+            if (!temVazamento) {
+                document.getElementById('semVazamentos').hidden = false;
+            } else {
+                relatorio.vazamentos.forEach(function (vazamento, indice) {
+                    var item = document.createElement('li');
+                    item.className = 'vazamento-item';
+
+                    var topo = document.createElement('div');
+                    topo.className = 'vazamento-topo';
+
+                    var identificacao = document.createElement('div');
+                    identificacao.className = 'identificacao-sensor';
+
+                    var numero = document.createElement('span');
+                    numero.className = 'numero-ocorrencia';
+                    numero.textContent = String(indice + 1).padStart(2, '0');
+
+                    var sensor = document.createElement('div');
+                    var rotulo = document.createElement('small');
+                    rotulo.textContent = 'OCORRÊNCIA ' + String(indice + 1).padStart(2, '0');
+                    var nomeSensor = document.createElement('h3');
+                    nomeSensor.textContent = vazamento.sensor;
+                    sensor.append(rotulo, nomeSensor);
+                    identificacao.append(numero, sensor);
+
+                    var duracao = document.createElement('span');
+                    duracao.className = 'duracao-vazamento';
+                    duracao.textContent = RelatoriosVazamentos.formatarDuracao(
+                        vazamento.duracaoMinutos
+                    );
+                    topo.append(identificacao, duracao);
+
+                    var horarios = document.createElement('div');
+                    horarios.className = 'linha-horarios';
+
+                    var inicio = document.createElement('div');
+                    inicio.className = 'horario-ponto';
+                    inicio.innerHTML = '<i aria-hidden="true"></i><span><small>INÍCIO</small></span>';
+                    inicio.querySelector('span').appendChild(document.createElement('strong'));
+                    inicio.querySelector('strong').textContent = vazamento.inicio;
+
+                    var fim = document.createElement('div');
+                    fim.className = 'horario-ponto fim';
+                    fim.innerHTML = '<i aria-hidden="true"></i><span><small>FIM</small></span>';
+                    fim.querySelector('span').appendChild(document.createElement('strong'));
+                    fim.querySelector('strong').textContent = vazamento.fim;
+
+                    horarios.append(inicio, fim);
+                    item.append(topo, horarios);
+                    document.getElementById('listaVazamentos').appendChild(item);
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>

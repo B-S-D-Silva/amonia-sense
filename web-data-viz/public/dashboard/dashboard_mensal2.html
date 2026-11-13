@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório mensal de vazamentos · AmoniaSense</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+    <script src="../js/relatorios-vazamentos.js"></script>
+    <link rel="stylesheet" href="../css/style-css-geral.css">
+    <link rel="stylesheet" href="../css/styleDash.css">
+    <style>
+        .detalhe-page {
+            --verde-escuro: #17231f;
+            --verde-medio: #2f6b4f;
+            --verde-claro: #e8f2ec;
+            --cinza-texto: #5d6c64;
+            --cinza-suave: #74827b;
+            --borda: #e1e9e4;
+            --superficie: #ffffff;
+            --alerta: #df5b52;
+            --alerta-claro: #fdeceb;
+            --neutro-barra: #cbd6d0;
+        }
+
+        /* ---------- Seletor de mês ---------- */
+        .seletor-mes {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 16px;
+            padding: 14px 18px;
+            background: var(--superficie);
+            border: 1px solid var(--borda);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(24, 55, 41, 0.06);
+        }
+
+        .seletor-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .seletor-info label {
+            color: var(--verde-escuro);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .seletor-info small {
+            color: var(--cinza-suave);
+            font-size: 12px;
+        }
+
+        .seletor-controles {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .seletor-controles input {
+            padding: 10px 12px;
+            color: var(--verde-escuro);
+            background: #f7faf8;
+            border: 1px solid #d5e0da;
+            border-radius: 10px;
+            font: inherit;
+            font-size: 14px;
+        }
+
+        .btn-mes {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            color: var(--verde-medio);
+            background: var(--verde-claro);
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font-size: 18px;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease;
+        }
+
+        .btn-mes:hover {
+            background: #d8eadf;
+            border-color: #b9d6c6;
+        }
+
+        .btn-mes:focus-visible,
+        .seletor-controles input:focus-visible {
+            outline: 3px solid rgba(47, 107, 79, 0.35);
+            outline-offset: 2px;
+        }
+
+        /* ---------- Resumo ---------- */
+        .resumo-relatorio {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .resumo-relatorio .card {
+            position: relative;
+            padding: 18px 20px 18px 24px;
+            background: var(--superficie);
+            border: 1px solid var(--borda);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(24, 55, 41, 0.06);
+            overflow: hidden;
+        }
+
+        .resumo-relatorio .card::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 5px;
+            background: var(--verde-medio);
+        }
+
+        .resumo-relatorio .card.card-alerta::before {
+            background: var(--alerta);
+        }
+
+        .resumo-rotulo {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--cinza-texto);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .resumo-valor {
+            display: block;
+            color: var(--verde-escuro);
+            font-size: 30px;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .resumo-valor small {
+            color: var(--cinza-suave);
+            font-size: 13px;
+            font-weight: 400;
+        }
+
+        /* ---------- Gráfico ---------- */
+        .dica-clique {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 14px;
+            padding: 10px 14px;
+            color: var(--verde-medio);
+            background: var(--verde-claro);
+            border-radius: 12px;
+            font-size: 13px;
+        }
+
+        .dica-clique svg {
+            flex: none;
+        }
+
+        .grafico-scroll {
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .grafico-mensal {
+            min-width: 900px;
+            height: 340px;
+        }
+
+        .estado-vazio {
+            display: none;
+            margin-top: 12px;
+            padding: 14px 16px;
+            color: var(--verde-medio);
+            background: var(--verde-claro);
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .estado-vazio.visivel {
+            display: block;
+        }
+
+        .legenda-item.sem-vazamento span {
+            background: var(--neutro-barra);
+        }
+
+        .legenda-item.com-vazamento span {
+            background: var(--alerta);
+        }
+
+        @media (max-width: 600px) {
+            .seletor-mes {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .seletor-controles {
+                justify-content: space-between;
+            }
+
+            .seletor-controles input {
+                flex: 1;
+            }
+
+            .resumo-valor {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body class="dashboard-page detalhe-page">
+    <header class="topbar">
+        <div class="nav-shell">
+            <a class="brand" href="../index.html" aria-label="AmoniaSense - Início">
+                <img class="brand-logo" src="../assets/img/logo-transparente.png" alt="AmoniaSense">
+            </a>
+            <nav class="nav-links" aria-label="Navegação principal">
+                <a href="../index.html#inicio">Início</a>
+                <a href="dashboard.html">Monitoramento diário</a>
+                <a href="dashboard_mensal.html">Monitoramento mensal</a>
+                <a href="dashboard_mensal2.html" aria-current="page">Relatório de vazamentos</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="titulo detalhe-titulo">
+            <h1>Relatório mensal de vazamentos</h1>
+            <p>Sala de carnes bovinas</p>
+            <span>Dados fictícios para simulação. Escolha um mês e clique em um dia para abrir o relatório dele.</span>
+        </div>
+
+        <section class="seletor-mes" aria-label="Seleção do mês do relatório">
+            <div class="seletor-info">
+                <label for="mesSelecionado">Mês do relatório</label>
+                <small>Use as setas para navegar entre os meses</small>
+            </div>
+            <div class="seletor-controles">
+                <button type="button" class="btn-mes" id="mesAnterior" aria-label="Mês anterior">&#8249;</button>
+                <input id="mesSelecionado" type="month">
+                <button type="button" class="btn-mes" id="mesProximo" aria-label="Próximo mês">&#8250;</button>
+            </div>
+        </section>
+
+        <section class="resumo-relatorio" aria-label="Resumo mensal">
+            <article class="card" id="cardDias">
+                <span class="resumo-rotulo">Dias com vazamento</span>
+                <span class="resumo-valor" id="diasComVazamento">0 <small>dias</small></span>
+            </article>
+            <article class="card" id="cardDuracao">
+                <span class="resumo-rotulo">Duração total dos vazamentos</span>
+                <span class="resumo-valor" id="duracaoTotal">0 <small>h</small></span>
+            </article>
+            <article class="card" id="cardMaior">
+                <span class="resumo-rotulo">Maior duração em um dia</span>
+                <span class="resumo-valor" id="maiorDuracaoDia">0 <small>h</small></span>
+            </article>
+        </section>
+
+        <section class="grafico-card" aria-labelledby="tituloGrafico">
+            <div class="grafico-topo">
+                <div>
+                    <h2 id="tituloGrafico">Vazamentos por dia</h2>
+                    <p id="subtituloGrafico">Cada coluna representa as horas totais de vazamento registradas naquele dia.</p>
+                </div>
+            </div>
+
+            <p class="dica-clique">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                Clique em qualquer coluna para abrir o relatório do dia. Colunas cinzas indicam que não houve vazamento.
+            </p>
+
+            <div class="grafico-scroll">
+                <div class="grafico grafico-mensal">
+                    <canvas id="graficoMensal" role="img"
+                        aria-label="Gráfico de barras com as horas de vazamento em cada dia do mês"></canvas>
+                </div>
+            </div>
+
+            <div class="estado-vazio" id="estadoVazio">
+                Nenhum vazamento registrado neste mês.
+            </div>
+
+            <div class="legenda" aria-label="Legenda do gráfico">
+                <div class="legenda-item sem-vazamento"><span></span>Sem vazamento</div>
+                <div class="legenda-item com-vazamento"><span></span>Dia com vazamento</div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        var seletorMes = document.getElementById('mesSelecionado');
+        var graficoMensal = null;
+        var relatorioDiario = [];
+        var ultimoMesValido = '';
+
+        var COR_VAZAMENTO = '#df5b52';
+        var COR_VAZAMENTO_HOVER = '#c4443b';
+        var COR_SEM_VAZAMENTO = '#cbd6d0';
+        var COR_SEM_VAZAMENTO_HOVER = '#b3c1b9';
+
+        function atualizarResumoMensal() {
+            var diasComVazamento = relatorioDiario.filter(function (registro) {
+                return registro.vazamentos.length > 0;
+            });
+            var duracaoTotal = diasComVazamento.reduce(function (total, registro) {
+                return total + registro.duracaoTotalMinutos;
+            }, 0);
+            var maiorDuracao = diasComVazamento.reduce(function (maior, registro) {
+                return Math.max(maior, registro.duracaoTotalMinutos);
+            }, 0);
+            var temVazamento = diasComVazamento.length > 0;
+
+            document.getElementById('diasComVazamento').innerHTML =
+                diasComVazamento.length + ' <small>' +
+                (diasComVazamento.length === 1 ? 'dia' : 'dias') + '</small>';
+            document.getElementById('duracaoTotal').innerHTML =
+                RelatoriosVazamentos.formatarDuracao(duracaoTotal) + ' <small>no mês</small>';
+            document.getElementById('maiorDuracaoDia').innerHTML =
+                RelatoriosVazamentos.formatarDuracao(maiorDuracao) + ' <small>no dia</small>';
+
+            ['cardDias', 'cardDuracao', 'cardMaior'].forEach(function (id) {
+                document.getElementById(id).classList.toggle('card-alerta', temVazamento);
+            });
+            document.getElementById('estadoVazio').classList.toggle('visivel', !temVazamento);
+        }
+
+        function mudarMes(deslocamento) {
+            var partes = seletorMes.value.split('-');
+            var data = new Date(Number(partes[0]), Number(partes[1]) - 1 + deslocamento, 1);
+            seletorMes.value = data.getFullYear() + '-' +
+                String(data.getMonth() + 1).padStart(2, '0');
+            atualizarGrafico();
+        }
+
+        function atualizarGrafico() {
+            if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(seletorMes.value)) {
+                seletorMes.value = ultimoMesValido;
+                return;
+            }
+
+            var partes = seletorMes.value.split('-');
+            var ano = Number(partes[0]);
+            var mes = Number(partes[1]);
+            if (!ano) {
+                seletorMes.value = ultimoMesValido;
+                return;
+            }
+
+            var nomeMes = new Intl.DateTimeFormat('pt-BR', {
+                month: 'long',
+                year: 'numeric'
+            }).format(new Date(ano, mes - 1, 1));
+
+            relatorioDiario = RelatoriosVazamentos.criarMes(ano, mes);
+            atualizarResumoMensal();
+
+            var dados = {
+                labels: relatorioDiario.map(function (registro) {
+                    return String(registro.dia).padStart(2, '0');
+                }),
+                datasets: [{
+                    label: 'Horas de vazamento',
+                    data: relatorioDiario.map(function (registro) {
+                        return registro.duracaoTotalMinutos / 60;
+                    }),
+                    backgroundColor: relatorioDiario.map(function (registro) {
+                        return registro.vazamentos.length > 0 ? COR_VAZAMENTO : COR_SEM_VAZAMENTO;
+                    }),
+                    hoverBackgroundColor: relatorioDiario.map(function (registro) {
+                        return registro.vazamentos.length > 0 ?
+                            COR_VAZAMENTO_HOVER : COR_SEM_VAZAMENTO_HOVER;
+                    }),
+                    borderRadius: 6,
+                    borderSkipped: false,
+                    maxBarThickness: 26,
+                    minBarLength: 3
+                }]
+            };
+
+            document.getElementById('subtituloGrafico').textContent =
+                nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1) +
+                ' · cada coluna mostra as horas totais de vazamento do dia.';
+            ultimoMesValido = seletorMes.value;
+
+            if (!graficoMensal) {
+                graficoMensal = new Chart(document.getElementById('graficoMensal').getContext('2d'), {
+                    type: 'bar',
+                    data: dados,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        onHover: function (evento, elementos) {
+                            var alvo = evento.native && evento.native.target;
+                            if (alvo) alvo.style.cursor = elementos.length ? 'pointer' : 'default';
+                        },
+                        onClick: function (evento, elementos) {
+                            if (elementos.length > 0) {
+                                var registro = relatorioDiario[elementos[0].index];
+                                window.location.href = 'relatorio_vazamento.html?data=' +
+                                    registro.dataISO;
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#17231f',
+                                padding: 12,
+                                cornerRadius: 10,
+                                titleFont: { size: 13, weight: '700' },
+                                bodyFont: { size: 12 },
+                                displayColors: false,
+                                callbacks: {
+                                    title: function (itens) {
+                                        return 'Dia ' + itens[0].label;
+                                    },
+                                    label: function (context) {
+                                        var registro = relatorioDiario[context.dataIndex];
+
+                                        if (registro.vazamentos.length === 0) {
+                                            return 'Sem vazamento';
+                                        }
+
+                                        return RelatoriosVazamentos.formatarDuracao(
+                                            registro.duracaoTotalMinutos
+                                        ) + ' de vazamento (' + registro.vazamentos.length +
+                                            (registro.vazamentos.length === 1 ?
+                                                ' ocorrência)' : ' ocorrências)');
+                                    },
+                                    footer: function (itens) {
+                                        return 'Clique para abrir o relatório do dia';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                border: { display: false },
+                                ticks: {
+                                    autoSkip: false,
+                                    maxRotation: 0,
+                                    minRotation: 0,
+                                    color: '#74827b',
+                                    font: { size: 11 }
+                                },
+                                title: { display: true, text: 'Dia do mês', color: '#74827b' }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                suggestedMax: 1,
+                                grid: { color: '#eef3f0' },
+                                border: { display: false },
+                                ticks: {
+                                    precision: 1,
+                                    color: '#74827b'
+                                },
+                                title: { display: true, text: 'Horas de vazamento', color: '#74827b' }
+                            }
+                        }
+                    }
+                });
+            } else {
+                graficoMensal.data = dados;
+                graficoMensal.update();
+            }
+        }
+
+        var agora = new Date();
+        var mesParametro = new URLSearchParams(window.location.search).get('mes');
+        var mesAtual = agora.getFullYear() + '-' +
+            String(agora.getMonth() + 1).padStart(2, '0');
+        seletorMes.value = /^\d{4}-(0[1-9]|1[0-2])$/.test(mesParametro || '') ?
+            mesParametro : mesAtual;
+        seletorMes.addEventListener('change', atualizarGrafico);
+        document.getElementById('mesAnterior').addEventListener('click', function () { mudarMes(-1); });
+        document.getElementById('mesProximo').addEventListener('click', function () { mudarMes(1); });
+        atualizarGrafico();
+    </script>
+</body>
+
+</html>
