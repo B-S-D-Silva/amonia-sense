@@ -174,7 +174,6 @@
         var hoje = DadosEvaporadores.dataHojeISO();
         var mes = DadosEvaporadores.mesAtual();
 
-        // Só os dias que já aconteceram entram nas contas
         var diasValidos = mes.dias.filter(function (item) {
             return !item.futuro;
         });
@@ -222,7 +221,6 @@
                 }
             });
 
-            // Evaporador sem ocorrência no mês: o link abre o dia de hoje
             if (analise.estado.chave === 'stable') {
                 analise.isoPico = hoje;
             }

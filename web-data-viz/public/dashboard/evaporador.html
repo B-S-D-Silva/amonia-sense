@@ -11,35 +11,50 @@
 
     <link rel="stylesheet" href="../css/style-css-geral.css">
     <link rel="stylesheet" href="../css/styleDash.css">
+    <link rel="stylesheet" href="../css/dashboard-navigation.css">
 </head>
 
 <body class="dashboard-page detalhe-page">
 
-    <header class="topbar">
-        <div class="nav-shell">
-            <a class="brand" href="../index.html" aria-label="AmoniaSense - Início">
+    <a class="skip-dashboard" href="#conteudo">Ir para o conteúdo</a>
+    <div class="dashboard-mobile-bar">
+        <span>AmoniaSense <strong>Dashboard</strong></span>
+        <button class="sidebar-mobile-toggle" type="button" aria-controls="dashboard-sidebar" aria-expanded="false" aria-label="Abrir menu"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    </div>
+    <button class="sidebar-overlay" type="button" aria-label="Fechar menu" tabindex="-1" hidden></button>
+    <aside id="dashboard-sidebar" class="dashboard-sidebar" aria-label="Menu da dashboard">
+        <div class="sidebar-heading">
+            <a class="brand sidebar-brand" href="dashboard.html" aria-label="AmoniaSense - Dashboard">
                 <img class="brand-logo" src="../assets/img/logo-transparente.png" alt="AmoniaSense">
             </a>
-
-            <nav class="nav-links" aria-label="Navegação principal">
-                <a href="../index.html#inicio">Início</a>
-                <a href="../index.html#solucoes">Soluções</a>
-                <a href="../calculadora.html">Simulador Financeiro</a>
-                <a href="../index.html#tecnologia">Sobre</a>
-                <a href="../index.html#contato">Fale Conosco</a>
-                <a class="botao-login" href="../pagina-login.html">Entrar</a>
-                <a href="../pagina-cadastro.html">Cadastrar-se</a>
-            </nav>
+            <button class="sidebar-toggle" type="button" aria-controls="dashboard-sidebar" aria-expanded="true" aria-label="Recolher menu"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
         </div>
-    </header>
+        <div class="sidebar-workspace"><span class="workspace-mark" aria-hidden="true">AS</span><div class="sidebar-text"><strong>Sala de carnes bovinas</strong><small>Monitoramento de amônia</small></div></div>
+        <nav id="dashboard-navigation" aria-label="Dashboards">
+            <p class="sidebar-label">DASHBOARDS</p>
+            <a href="dashboard.html" data-dashboard-link="day" title="Visão diária"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M7 14h3M7 17h6"/></svg><span class="sidebar-text">Visão diária</span></a>
+            <a href="dashboard_mensal.html" data-dashboard-link="month" title="Visão mensal"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M7 14h1m4 0h1m4 0h1M7 17h1m4 0h1m4 0h1"/></svg><span class="sidebar-text">Visão mensal</span></a>
+            <a href="evaporador.html" data-dashboard-link="live" aria-current="page" title="Tempo real"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg><span class="sidebar-text">Tempo real</span></a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a class="sidebar-home" href="../index.html" title="Página inicial"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg><span class="sidebar-text">Página inicial</span></a>
+            <div class="sidebar-account">
+                <span class="user-avatar" aria-hidden="true">AS</span>
+                <div class="sidebar-text account-info"><strong class="sidebar-user-name">Visitante</strong><small class="sidebar-user-status">Modo demonstrativo</small></div>
+                <button class="sidebar-logout" type="button" aria-label="Sair da conta" title="Sair da conta" hidden><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H4v16h5M13 8l4 4-4 4M8 12h13"/></svg><span class="sidebar-text">Sair</span></button>
+                <a class="sidebar-login" href="../pagina-login.html" title="Entrar na conta" aria-label="Entrar na conta"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H4v16h5M13 8l4 4-4 4M8 12h13"/></svg><span class="sidebar-text">Entrar</span></a>
+            </div>
+        </div>
+    </aside>
 
-    <main>
+    <main id="conteudo" tabindex="-1">
 
         <div class="titulo detalhe-titulo">
-            <a class="voltar-link" href="dashboard.html">← Voltar para o painel</a>
+            <p class="section-eyebrow">MONITORAMENTO · TEMPO REAL</p>
             <h1 id="nomeEvaporador">Evaporador 2</h1>
             <p id="localEvaporador">Sensor 2</p>
-            <span class="estado-inline" id="estadoEvaporador" data-state="critical">Alerta crític</span>
+            <label class="sensor-picker" for="sensorSelecionado">Selecionar evaporador <select id="sensorSelecionado"></select></label>
+            <span class="estado-inline" id="estadoEvaporador" data-state="critical">Alerta crítico</span>
         </div>
 
         <section class="cards detalhe-cards">
@@ -57,7 +72,7 @@
 
             <div class="card">
                 <div class="card-top">
-                    <span>ALERTAS DE HOJE</span>
+                    <span>ALERTAS DO DIA</span>
                 </div>
 
                 <div class="valor">
@@ -105,7 +120,7 @@
 
                 <div class="grafico-topo">
                     <div>
-                        <h2>Leituras em tempo real</h2>
+                        <h2 id="tituloGrafico">Leituras em tempo real</h2>
                         <p id="subtituloGrafico">Amônia medida pelo sensor (PPM)</p>
                     </div>
 
@@ -140,7 +155,7 @@
 
                 <div class="eventos-topo">
                     <div>
-                        <h2>Alertas de hoje</h2>
+                        <h2>Alertas do dia</h2>
                         <p id="subtituloRelatorio">Registros do evaporador selecionado</p>
                     </div>
 
@@ -202,6 +217,7 @@
         </div>
     </footer>
 
+    <script src="../js/dashboard-navigation.js"></script>
     <script src="../js/dados-evaporadores.js"></script>
 
     <script>
@@ -212,7 +228,24 @@
         var evaporador = DadosEvaporadores.obterEvaporador(idEvaporador) ||
             DadosEvaporadores.evaporadores[0];
 
-        var hoje = DadosEvaporadores.dataHojeISO();
+        var dataAtual = DadosEvaporadores.dataHojeISO();
+        var dataPedida = parametros.get('data');
+        var dataValida = /^\d{4}-\d{2}-\d{2}$/.test(dataPedida || '') &&
+            !Number.isNaN(new Date(dataPedida + 'T12:00:00').getTime()) &&
+            DadosEvaporadores.formatarISO(new Date(dataPedida + 'T12:00:00')) === dataPedida && dataPedida <= dataAtual;
+        var hoje = dataValida ? dataPedida : dataAtual;
+        var seletorSensor = document.getElementById('sensorSelecionado');
+        DadosEvaporadores.evaporadores.forEach(function (sensor) {
+            var opcao = document.createElement('option');
+            opcao.value = String(sensor.id);
+            opcao.textContent = sensor.nome + ' · ' + sensor.sensor;
+            seletorSensor.appendChild(opcao);
+        });
+        seletorSensor.value = String(evaporador.id);
+        seletorSensor.addEventListener('change', function () {
+            window.location.href = 'evaporador.html?id=' + encodeURIComponent(seletorSensor.value) + '&data=' + hoje;
+        });
+        document.getElementById('tituloGrafico').textContent = hoje === dataAtual ? 'Leituras em tempo real' : 'Histórico de leituras';
 
         var grafico = null;
 
@@ -414,7 +447,7 @@
             if (resumo.alertas.length === 0) {
                 var vazio = document.createElement('p');
                 vazio.className = 'eventos-vazio';
-                vazio.textContent = 'Nenhum alerta hoje.';
+                vazio.textContent = 'Nenhum alerta neste dia.';
                 listaEventos.appendChild(vazio);
                 return;
             }
@@ -461,7 +494,7 @@
                 DadosEvaporadores.formatarPpm(resumo.pico) + ' ppm';
             picoAtual.dataset.state = estadoPico.chave;
 
-            subtituloGrafico.textContent = evaporador.sensor + ' · Tempo real';
+            subtituloGrafico.textContent = evaporador.sensor + ' · ' + DadosEvaporadores.formatarDataBR(hoje);
             subtituloRelatorio.textContent = evaporador.nome + ' · ' +
                 DadosEvaporadores.formatarDataBR(hoje);
 
