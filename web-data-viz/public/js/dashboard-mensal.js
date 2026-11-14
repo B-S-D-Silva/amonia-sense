@@ -1,109 +1,212 @@
 (function () {
     'use strict';
-    var seletor = document.getElementById('mesSelecionado');
-    var calendario = document.getElementById('calendarioDias');
-    var formatoMes = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' });
-    var formatoNumero = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 });
+
+    var seletorMes = document.getElementById('mesSelecionado');
+    var botaoMesAnterior = document.getElementById('mesAnterior');
+    var botaoMesProximo = document.getElementById('mesProximo');
+    var graficoMensal = null;
+    var relatorioDiario = [];
+    var ultimoMesValido = '';
+
+    var cores = {
+        vazamento: '#df5b52',
+        vazamentoHover: '#c4443b',
+        semVazamento: '#cbd6d0',
+        semVazamentoHover: '#b3c1b9'
+    };
 
     function mesValido(valor) {
-        return /^\d{4}-(0[1-9]|1[0-2])$/.test(valor || '') && valor.slice(0, 4) !== '0000' &&
-            valor <= DadosEvaporadores.dataHojeISO().slice(0, 7);
+        return /^\d{4}-(0[1-9]|1[0-2])$/.test(valor || '') &&
+            Number(valor.slice(0, 4)) > 0 && valor <= seletorMes.max;
     }
 
-    function atualizarSensores() {
-        var ativos = DadosEvaporadores.evaporadores.filter(function (sensor) {
-            // Zero ppm é uma leitura válida. Sem telemetria de conexão, esta é apenas disponibilidade simulada.
-            var leituras = DadosEvaporadores.obterLeituras(sensor, DadosEvaporadores.dataHojeISO());
-            return Number.isFinite(leituras[leituras.length - 1]);
-        }).length;
-        document.getElementById('sensoresAtivos').textContent = ativos + '/' + DadosEvaporadores.evaporadores.length;
+    function formatarMes(ano, mes) {
+        var data = new Date(0);
+        data.setFullYear(ano, mes - 1, 1);
+        data.setHours(12, 0, 0, 0);
+        return new Intl.DateTimeFormat('pt-BR', {
+            month: 'long',
+            year: 'numeric'
+        }).format(data);
     }
 
-    function renderizar() {
-        var hoje = DadosEvaporadores.dataHojeISO();
-        seletor.max = hoje.slice(0, 7);
-        if (!mesValido(seletor.value)) seletor.value = seletor.max;
-        var partes = seletor.value.split('-').map(Number);
-        // setFullYear também suporta corretamente anos de 0001 a 0099.
-        var inicio = new Date(0);
-        inicio.setHours(12, 0, 0, 0);
-        inicio.setFullYear(partes[0], partes[1] - 1, 1);
-        var fim = new Date(inicio);
-        fim.setMonth(fim.getMonth() + 1, 0);
-        var soma = 0;
-        var quantidade = 0;
-        var diasDisponiveis = 0;
-        var diasVazamento = 0;
-        var diasCriticos = 0;
-        var fragmento = document.createDocumentFragment();
+    function atualizarValor(elemento, valor, unidade) {
+        elemento.replaceChildren(document.createTextNode(valor + ' '));
+        var detalhe = document.createElement('small');
+        detalhe.textContent = unidade;
+        elemento.appendChild(detalhe);
+    }
 
-        for (var dia = 1; dia <= fim.getDate(); dia++) {
-            var iso = seletor.value + '-' + String(dia).padStart(2, '0');
-            var futuro = iso > hoje;
-            var pico = null;
-            if (!futuro) {
-                DadosEvaporadores.evaporadores.forEach(function (sensor) {
-                    DadosEvaporadores.obterLeituras(sensor, iso).forEach(function (valor) {
-                        if (!Number.isFinite(valor) || valor < 0) return;
-                        soma += valor;
-                        quantidade++;
-                        pico = pico === null ? valor : Math.max(pico, valor);
-                    });
-                });
-                if (pico !== null) diasDisponiveis++;
-            }
-            var estado = pico === null ? null : DadosEvaporadores.obterEstado(pico);
-            if (estado && estado.chave !== 'stable') diasVazamento++;
-            if (estado && estado.chave === 'critical') diasCriticos++;
-            var botao = document.createElement('button');
-            botao.type = 'button';
-            botao.className = 'dia-mes';
-            botao.textContent = String(dia);
-            if (dia === 1) botao.style.gridColumnStart = String(inicio.getDay() + 1);
-            if (estado) botao.dataset.state = estado.chave;
-            if (iso === hoje) {
-                botao.classList.add('hoje');
-                botao.setAttribute('aria-current', 'date');
-            }
-            var descricao = DadosEvaporadores.formatarDataBR(iso) + ' · ' +
-                (futuro ? 'Data futura' : estado ? estado.rotulo : 'Sem leituras');
-            botao.setAttribute('aria-label', descricao);
-            botao.title = descricao;
-            botao.disabled = futuro || !estado;
-            botao.dataset.date = iso;
-            fragmento.appendChild(botao);
-        }
+    function atualizarResumoMensal() {
+        var diasComVazamento = relatorioDiario.filter(function (registro) {
+            return registro.vazamentos.length > 0;
+        });
+        var duracaoTotal = diasComVazamento.reduce(function (total, registro) {
+            return total + registro.duracaoTotalMinutos;
+        }, 0);
+        var maiorDuracao = diasComVazamento.reduce(function (maior, registro) {
+            return Math.max(maior, registro.duracaoTotalMinutos);
+        }, 0);
+        var temVazamento = diasComVazamento.length > 0;
 
-        calendario.replaceChildren(fragmento);
-        document.getElementById('rotuloMes').textContent = formatoMes.format(inicio);
-        document.getElementById('resumoPeriodo').textContent = diasDisponiveis +
-            (diasDisponiveis === 1 ? ' dia com leituras' : ' dias com leituras') + ' · ' +
-            formatoNumero.format(quantidade) + ' leituras demonstrativas';
-        document.getElementById('mediaPpm').textContent = quantidade ? formatoNumero.format(soma / quantidade) : '—';
-        document.getElementById('detalheMedia').textContent = quantidade
-            ? 'Média de todas as leituras do período, incluindo zero ppm.' : 'Sem leituras disponíveis no período.';
-        document.getElementById('totalVazamentos').textContent = diasDisponiveis ? String(diasVazamento) : '—';
-        document.getElementById('unidadeVazamentos').textContent = diasVazamento === 1 ? 'dia' : 'dias';
-        document.getElementById('detalheVazamentos').textContent = diasDisponiveis
-            ? diasVazamento + ' de ' + diasDisponiveis + ' dias com leituras tiveram vazamento.' : 'Sem leituras disponíveis no período.';
-        document.getElementById('cardVazamentos').dataset.state = diasCriticos ? 'critical' : diasVazamento ? 'attention' : 'stable';
-        atualizarSensores();
+        atualizarValor(
+            document.getElementById('diasComVazamento'),
+            String(diasComVazamento.length),
+            diasComVazamento.length === 1 ? 'dia' : 'dias'
+        );
+        atualizarValor(
+            document.getElementById('duracaoTotal'),
+            RelatoriosVazamentos.formatarDuracao(duracaoTotal),
+            'no mês'
+        );
+        atualizarValor(
+            document.getElementById('maiorDuracaoDia'),
+            RelatoriosVazamentos.formatarDuracao(maiorDuracao),
+            'no dia'
+        );
+
+        ['cardDias', 'cardDuracao', 'cardMaior'].forEach(function (id) {
+            document.getElementById(id).classList.toggle('card-alerta', temVazamento);
+        });
+        document.getElementById('estadoVazio').classList.toggle('visivel', !temVazamento);
+    }
+
+    function atualizarUrl() {
         var url = new URL(window.location.href);
-        url.searchParams.set('mes', seletor.value);
+        url.searchParams.set('mes', seletorMes.value);
         window.history.replaceState(null, '', url);
     }
 
-    seletor.max = DadosEvaporadores.dataHojeISO().slice(0, 7);
-    var mesUrl = new URLSearchParams(window.location.search).get('mes');
-    seletor.value = mesValido(mesUrl) ? mesUrl : seletor.max;
-    seletor.addEventListener('change', renderizar);
-    calendario.addEventListener('click', function (event) {
-        var botao = event.target.closest('button[data-date]');
-        if (botao && !botao.disabled) window.location.href = 'dashboard.html?data=' + botao.dataset.date;
+    function atualizarControlesMes() {
+        botaoMesProximo.disabled = seletorMes.value >= seletorMes.max;
+    }
+
+    function criarGrafico() {
+        var valores = relatorioDiario.map(function (registro) {
+            return registro.duracaoTotalMinutos / 60;
+        });
+        var coresBarras = relatorioDiario.map(function (registro) {
+            return registro.vazamentos.length > 0 ? cores.vazamento : cores.semVazamento;
+        });
+        var coresHover = relatorioDiario.map(function (registro) {
+            return registro.vazamentos.length > 0 ? cores.vazamentoHover : cores.semVazamentoHover;
+        });
+
+        if (graficoMensal) {
+            graficoMensal.data.labels = relatorioDiario.map(function (registro) {
+                return String(registro.dia).padStart(2, '0');
+            });
+            graficoMensal.data.datasets[0].data = valores;
+            graficoMensal.data.datasets[0].backgroundColor = coresBarras;
+            graficoMensal.data.datasets[0].hoverBackgroundColor = coresHover;
+            var partesMes = seletorMes.value.split('-').map(Number);
+            graficoMensal.options.scales.x.title.text = formatarMes(partesMes[0], partesMes[1]);
+            graficoMensal.update();
+            return;
+        }
+
+        graficoMensal = new Chart(document.getElementById('graficoMensal'), {
+            type: 'bar',
+            data: {
+                labels: relatorioDiario.map(function (registro) {
+                    return String(registro.dia).padStart(2, '0');
+                }),
+                datasets: [{
+                    label: 'Horas de vazamento',
+                    data: valores,
+                    backgroundColor: coresBarras,
+                    hoverBackgroundColor: coresHover,
+                    borderRadius: 4,
+                    minBarLength: 3
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                interaction: {
+                    intersect: true,
+                    mode: 'nearest'
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function (itens) {
+                                return itens.length ? 'Dia ' + itens[0].label : '';
+                            },
+                            label: function (contexto) {
+                                var registro = relatorioDiario[contexto.dataIndex];
+                                if (registro.vazamentos.length === 0) return 'Sem vazamento';
+                                var duracao = RelatoriosVazamentos.formatarDuracao(registro.duracaoTotalMinutos);
+                                var quantidade = registro.vazamentos.length;
+                                return duracao + ' · ' + quantidade +
+                                    (quantidade === 1 ? ' ocorrência' : ' ocorrências');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: formatarMes.apply(null, seletorMes.value.split('-').map(Number)) },
+                        grid: { display: false }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Horas de vazamento' },
+                        ticks: { precision: 1 }
+                    }
+                },
+                onClick: function (evento, elementos) {
+                    if (!elementos.length) return;
+                    var registro = relatorioDiario[elementos[0].index];
+                    if (registro) {
+                        window.location.href = 'relatorio_vazamento.html?data=' +
+                            encodeURIComponent(registro.dataISO);
+                    }
+                }
+            }
+        });
+    }
+
+    function atualizarGrafico() {
+        if (!mesValido(seletorMes.value)) {
+            seletorMes.value = ultimoMesValido;
+            return;
+        }
+
+        ultimoMesValido = seletorMes.value;
+        var partes = seletorMes.value.split('-').map(Number);
+        relatorioDiario = RelatoriosVazamentos.criarMes(partes[0], partes[1]);
+        document.getElementById('subtituloGrafico').textContent =
+            'Horas totais de vazamento registradas por dia em ' + formatarMes(partes[0], partes[1]) + '.';
+        atualizarResumoMensal();
+        atualizarControlesMes();
+        atualizarUrl();
+        criarGrafico();
+    }
+
+    function mudarMes(deslocamento) {
+        var partes = seletorMes.value.split('-').map(Number);
+        var data = new Date(0);
+        data.setHours(12, 0, 0, 0);
+        data.setFullYear(partes[0], partes[1] - 1 + deslocamento, 1);
+        seletorMes.value = data.getFullYear() + '-' +
+            String(data.getMonth() + 1).padStart(2, '0');
+        atualizarGrafico();
+    }
+
+    seletorMes.max = DadosEvaporadores.dataHojeISO().slice(0, 7);
+    var mesInicial = new URLSearchParams(window.location.search).get('mes');
+    seletorMes.value = mesValido(mesInicial) ? mesInicial : seletorMes.max;
+    ultimoMesValido = seletorMes.value;
+
+    seletorMes.addEventListener('change', atualizarGrafico);
+    botaoMesAnterior.addEventListener('click', function () {
+        mudarMes(-1);
     });
-    document.addEventListener('visibilitychange', function () {
-        if (!document.hidden) renderizar();
+    botaoMesProximo.addEventListener('click', function () {
+        if (!botaoMesProximo.disabled) mudarMes(1);
     });
-    renderizar();
-    window.setInterval(atualizarSensores, 30000);
+
+    atualizarGrafico();
 })();

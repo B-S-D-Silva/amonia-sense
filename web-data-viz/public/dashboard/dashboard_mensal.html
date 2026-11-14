@@ -4,390 +4,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório mensal de vazamentos · AmoniaSense</title>
 
-    <title>Monitoramento Mensal de Amônia</title>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+    <script src="../js/dados-evaporadores.js"></script>
+    <script src="../js/relatorio_vazamentos.js"></script>
     <link rel="stylesheet" href="../css/style-css-geral.css">
     <link rel="stylesheet" href="../css/styleDash.css">
+    <link rel="stylesheet" href="../css/dashboard-navigation.css">
 </head>
 
-<body class="dashboard-page">
+<body class="dashboard-page detalhe-page">
+    <a class="skip-dashboard" href="#conteudo">Ir para o conteúdo</a>
+    <div class="dashboard-mobile-bar">
+        <span>AmoniaSense <strong>Dashboard</strong></span>
+        <button class="sidebar-mobile-toggle" type="button" aria-controls="dashboard-sidebar" aria-expanded="false" aria-label="Abrir menu">
+            <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+    </div>
+    <button class="sidebar-overlay" type="button" aria-label="Fechar menu" tabindex="-1" hidden></button>
 
-    <header class="topbar">
-        <div class="nav-shell">
-            <a class="brand" href="../index.html" aria-label="AmoniaSense - Início">
+    <aside id="dashboard-sidebar" class="dashboard-sidebar" aria-label="Menu da dashboard">
+        <div class="sidebar-heading">
+            <a class="brand sidebar-brand" href="dashboard.html" aria-label="AmoniaSense - Dashboard">
                 <img class="brand-logo" src="../assets/img/logo-transparente.png" alt="AmoniaSense">
             </a>
-
-            <nav class="nav-links" aria-label="Navegação principal">
-                <a href="../index.html#inicio">Início</a>
-                <a href="../index.html#solucoes">Soluções</a>
-                <a href="dashboard.html">Monitoramento diário</a>
-                <a href="dashboard-mensal.html">Monitoramento mensal</a>
-                <a href="../calculadora.html">Simulador Financeiro</a>
-                <a href="../index.html#tecnologia">Sobre</a>
-                <a href="../index.html#contato">Fale Conosco</a>
-                <a class="botao-login" href="../pagina-login.html">Entrar</a>
-                <a href="../pagina-cadastro.html">Cadastrar-se</a>
-            </nav>
+            <button class="sidebar-toggle" type="button" aria-controls="dashboard-sidebar" aria-expanded="true" aria-label="Recolher menu">
+                <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
         </div>
-    </header>
+        <div class="sidebar-workspace">
+            <span class="workspace-mark" aria-hidden="true">AS</span>
+            <div class="sidebar-text"><strong>Sala de carnes bovinas</strong><small>Monitoramento de amônia</small></div>
+        </div>
+        <nav id="dashboard-navigation" aria-label="Dashboards">
+            <p class="sidebar-label">DASHBOARDS</p>
+            <a href="dashboard.html" data-dashboard-link="day" title="Visão diária">
+                <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M7 14h3M7 17h6"/></svg>
+                <span class="sidebar-text">Visão diária</span>
+            </a>
+            <a href="dashboard_mensal.html" data-dashboard-link="month" aria-current="page" title="Visão mensal">
+                <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M7 14h1m4 0h1m4 0h1M7 17h1m4 0h1m4 0h1"/></svg>
+                <span class="sidebar-text">Visão mensal</span>
+            </a>
+            <a href="evaporador.html" data-dashboard-link="live" title="Tempo real">
+                <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
+                <span class="sidebar-text">Tempo real</span>
+            </a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a class="sidebar-home" href="../index.html" title="Página inicial">
+                <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg>
+                <span class="sidebar-text">Página inicial</span>
+            </a>
+            <div class="sidebar-account">
+                <span class="user-avatar" aria-hidden="true">AS</span>
+                <div class="sidebar-text account-info"><strong class="sidebar-user-name">Visitante</strong><small class="sidebar-user-status">Modo demonstrativo</small></div>
+                <button class="sidebar-logout" type="button" aria-label="Sair da conta" title="Sair da conta" hidden>
+                    <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H4v16h5M13 8l4 4-4 4M8 12h13"/></svg><span class="sidebar-text">Sair</span>
+                </button>
+                <a class="sidebar-login" href="../pagina-login.html" title="Entrar na conta" aria-label="Entrar na conta">
+                    <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H4v16h5M13 8l4 4-4 4M8 12h13"/></svg><span class="sidebar-text">Entrar</span>
+                </a>
+            </div>
+        </div>
+    </aside>
 
-    <main>
-
-        <div class="titulo">
-            <h1>Monitoramento mensal</h1>
+    <main id="conteudo" tabindex="-1">
+        <div class="titulo detalhe-titulo">
+            <p class="section-eyebrow">VISÃO MENSAL · MONITORAMENTO</p>
+            <h1>Relatório mensal de vazamentos</h1>
             <p>Sala de carnes bovinas</p>
-            <span>Veja como o mês está indo e clique em um dia para abrir o monitoramento diário.</span>
+            <span>Dados demonstrativos. Selecione um mês e clique em um dia para ver os detalhes.</span>
         </div>
 
-        <section class="cards" aria-label="Resumo do mês">
-
-            <div class="card sensores">
-                <div class="card-top">
-                    <span>EVAPORADORES</span>
-                </div>
-
-                <div class="valor">
-                    <span id="totalEvaporadores">6</span>
-                    <small>monitorados</small>
-                </div>
-                <div class="linha2"></div>
-                <small id="totalDias"></small>
+        <section class="seletor-mes" aria-label="Seleção do mês do relatório">
+            <div class="seletor-info">
+                <label for="mesSelecionado">Mês do relatório</label>
+                <small>Use as setas para navegar entre os meses</small>
             </div>
-
-            <div class="card vazamentos" id="cardVazamentos" data-state="stable">
-                <div class="card-top">
-                    <span>DIAS COM VAZAMENTO</span>
-                </div>
-
-                <div class="valor">
-                    <span id="totalVazamentos">0</span>
-                    <small id="unidadeVazamentos">dias</small>
-                </div>
-                <div class="linha2"></div>
-                <small id="detalheVazamentos">Nenhum vazamento detectado no mês.</small>
+            <div class="seletor-controles">
+                <button type="button" class="btn-mes" id="mesAnterior" aria-label="Mês anterior">&#8249;</button>
+                <input id="mesSelecionado" type="month" aria-label="Mês do relatório">
+                <button type="button" class="btn-mes" id="mesProximo" aria-label="Próximo mês">&#8250;</button>
             </div>
-
-            <div class="card estado" data-state="stable">
-                <div class="card-top">
-                    <span>ESTADO DO MÊS</span>
-                </div>
-
-                <h2 id="estadoNivel" data-state="stable">Estável</h2>
-
-                <p class="estado-descricao" id="estadoDescricao">Manter rotina</p>
-            </div>
-
         </section>
 
-        <section class="filtro-data" aria-label="Dias do mês">
-
-            <div class="filtro-info">
-                <span>MÊS ANALISADO</span>
-                <strong id="rotuloPeriodo"></strong>
-                <small id="dataPeriodo"></small>
-            </div>
-
-            <div class="mes-calendario">
-                <div class="mes-topo">
-                    <strong id="rotuloMes"></strong>
-
-                    <div class="legenda-dias">
-                        <span class="legenda-dia attention"><i></i>Alerta</span>
-                        <span class="legenda-dia critical"><i></i>Crítico</span>
-                    </div>
-                </div>
-
-                <div class="calendario" id="calendarioDias" role="group" aria-label="Dias do mês"></div>
-            </div>
-
+        <section class="resumo-relatorio" aria-label="Resumo mensal">
+            <article class="card" id="cardDias">
+                <span class="resumo-rotulo">Dias com vazamento</span>
+                <span class="resumo-valor" id="diasComVazamento">0 <small>dias</small></span>
+            </article>
+            <article class="card" id="cardDuracao">
+                <span class="resumo-rotulo">Duração total dos vazamentos</span>
+                <span class="resumo-valor" id="duracaoTotal">0 <small>h</small></span>
+            </article>
+            <article class="card" id="cardMaior">
+                <span class="resumo-rotulo">Maior duração em um dia</span>
+                <span class="resumo-valor" id="maiorDuracaoDia">0 <small>h</small></span>
+            </article>
         </section>
 
-        <section class="evaporadores-section" aria-labelledby="tituloEvaporadores">
-
-            <div class="evaporadores-topo">
+        <section class="grafico-card" aria-labelledby="tituloGrafico">
+            <div class="grafico-topo">
                 <div>
-                    <h2 id="tituloEvaporadores">Evaporadores no mês</h2>
-                    <p>Clique em um evaporador para ver o dia do pico.</p>
+                    <h2 id="tituloGrafico">Vazamentos por dia</h2>
+                    <p id="subtituloGrafico">Cada coluna representa as horas totais de vazamento registradas naquele dia.</p>
                 </div>
-
-                <span class="contador-evaporadores" id="contadorEvaporadores">6 monitorados</span>
             </div>
-
-            <div class="evaporadores-grid" id="listaEvaporadores"></div>
-
+            <p class="dica-clique">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                Clique em qualquer coluna para abrir o relatório do dia. Colunas cinzas indicam que não houve vazamento.
+            </p>
+            <div class="grafico-scroll">
+                <div class="grafico grafico-mensal">
+                    <canvas id="graficoMensal" role="img" aria-label="Gráfico de barras com as horas de vazamento em cada dia do mês"></canvas>
+                </div>
+            </div>
+            <p class="estado-vazio" id="estadoVazio" role="status">Nenhum vazamento registrado neste mês.</p>
+            <div class="legenda" aria-label="Legenda do gráfico">
+                <div class="legenda-item sem-vazamento"><span></span>Sem vazamento</div>
+                <div class="legenda-item com-vazamento"><span></span>Dia com vazamento</div>
+            </div>
         </section>
-
     </main>
 
-    <footer>
-        <div class="footer-conteudo">
-
-            <div class="coluna-logo">
-                <a class="brand" href="../index.html#inicio" aria-label="AmoniaSense - Início">
-                    <img class="brand-logo" src="../assets/img/logo-transparente.png" alt="AmoniaSense">
-                </a>
-
-                <p>
-                    Segurança do trabalho e eficiência operacional por meio do
-                    monitoramento contínuo de gases refrigerantes no setor frigorífico.
-                </p>
-            </div>
-
-            <div class="colunas-direita">
-
-                <div>
-                    <h3>NAVEGAÇÃO</h3>
-                    <p><a href="../index.html#tecnologia">Tecnologia</a></p>
-                    <p><a href="../calculadora.html">Simulador Financeiro</a></p>
-                    <p><a href="../equipe.html">👥 Nossa Equipe</a></p>
-                </div>
-
-                <div>
-                    <h3>SUPORTE</h3>
-                    <p>Documentação Técnica</p>
-                    <p>suporte@amoniasense.com.br</p>
-                    <p>+55 (11) 98765-4321</p>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="copyright">
-            <span class="texto-copy">
-                © 2026 AmoniaSense Systems. Todos os direitos reservados.
-            </span>
-
-            <span class="texto-normas">
-                Desenvolvido sob normas NR-36 e NR-15.
-            </span>
-        </div>
-    </footer>
-
-    <script src="../js/dados-evaporadores.js"></script>
-
-    <script>
-
-        var ordemEstados = { critical: 0, attention: 1, stable: 2 };
-
-        var hoje = DadosEvaporadores.dataHojeISO();
-        var mes = DadosEvaporadores.mesAtual();
-
-        var diasValidos = mes.dias.filter(function (item) {
-            return !item.futuro;
-        });
-
-        var cardVazamentos = document.getElementById('cardVazamentos');
-        var totalEvaporadores = document.getElementById('totalEvaporadores');
-        var totalDias = document.getElementById('totalDias');
-        var totalVazamentos = document.getElementById('totalVazamentos');
-        var unidadeVazamentos = document.getElementById('unidadeVazamentos');
-        var detalheVazamentos = document.getElementById('detalheVazamentos');
-        var estadoNivel = document.getElementById('estadoNivel');
-        var estadoDescricao = document.getElementById('estadoDescricao');
-        var listaEvaporadores = document.getElementById('listaEvaporadores');
-        var contadorEvaporadores = document.getElementById('contadorEvaporadores');
-        var rotuloPeriodo = document.getElementById('rotuloPeriodo');
-        var dataPeriodo = document.getElementById('dataPeriodo');
-        var rotuloMes = document.getElementById('rotuloMes');
-        var calendarioDias = document.getElementById('calendarioDias');
-
-        function analisarEvaporador(evaporador) {
-            var analise = {
-                evaporador: evaporador,
-                estado: null,
-                pico: 0,
-                isoPico: hoje,
-                diasAlerta: 0,
-                diasCritico: 0
-            };
-
-            diasValidos.forEach(function (item) {
-                var resumo = DadosEvaporadores.obterResumo(evaporador, item.iso);
-                var chave = resumo.estado.chave;
-
-                if (chave === 'critical') analise.diasCritico++;
-                if (chave === 'attention') analise.diasAlerta++;
-
-                var maisGrave = !analise.estado ||
-                    ordemEstados[chave] < ordemEstados[analise.estado.chave] ||
-                    (chave === analise.estado.chave && resumo.pico > analise.pico);
-
-                if (maisGrave) {
-                    analise.estado = resumo.estado;
-                    analise.pico = resumo.pico;
-                    analise.isoPico = item.iso;
-                }
-            });
-
-            if (analise.estado.chave === 'stable') {
-                analise.isoPico = hoje;
-            }
-
-            return analise;
-        }
-
-        function renderizarCalendario() {
-            rotuloMes.textContent = mes.nome + ' ' + mes.ano;
-            calendarioDias.replaceChildren();
-
-            mes.dias.forEach(function (item) {
-                var estado = DadosEvaporadores.obterEstadoDoDia(item.iso);
-
-                var botao = document.createElement('button');
-                botao.type = 'button';
-                botao.className = 'dia-mes';
-                botao.textContent = String(item.dia);
-                botao.setAttribute('aria-label', 'Dia ' + item.dia + ' · ' + estado.rotulo);
-
-                if (!item.futuro) {
-                    botao.dataset.state = estado.chave;
-                }
-
-                if (item.hoje) {
-                    botao.classList.add('hoje');
-                }
-
-                if (item.futuro) {
-                    botao.disabled = true;
-                }
-
-                botao.addEventListener('click', function () {
-                    window.location.href = 'dashboard.html?data=' + item.iso;
-                });
-
-                calendarioDias.appendChild(botao);
-            });
-        }
-
-        function criarCardEvaporador(analise) {
-            var evaporador = analise.evaporador;
-
-            var card = document.createElement('a');
-            card.className = 'evaporador-card ' + analise.estado.chave;
-            card.href = 'evaporador.html?id=' + evaporador.id + '&data=' + analise.isoPico;
-
-            var topo = document.createElement('div');
-            topo.className = 'evaporador-topo';
-
-            var identificacao = document.createElement('div');
-
-            var nome = document.createElement('h3');
-            nome.textContent = evaporador.nome;
-
-            var sensor = document.createElement('p');
-            sensor.textContent = evaporador.sensor + ' · pico do mês';
-
-            identificacao.append(nome, sensor);
-
-            var selo = document.createElement('span');
-            selo.className = 'sensor-badge ' + analise.estado.chave;
-            selo.textContent = analise.estado.rotulo;
-
-            topo.append(identificacao, selo);
-
-            var valor = document.createElement('div');
-            valor.className = 'evaporador-valor';
-            valor.textContent = DadosEvaporadores.formatarPpm(analise.pico) + ' ';
-
-            var unidade = document.createElement('small');
-            unidade.textContent = 'ppm';
-            valor.appendChild(unidade);
-
-            var rodape = document.createElement('div');
-            rodape.className = 'evaporador-rodape';
-
-            var ocorrencias = document.createElement('span');
-            ocorrencias.className = 'evaporador-acao';
-
-            if (analise.diasAlerta + analise.diasCritico === 0) {
-                ocorrencias.textContent = 'Sem ocorrências no mês';
-            } else {
-                ocorrencias.textContent = analise.diasAlerta + ' em alerta · ' + analise.diasCritico + ' crítico' +
-                    (analise.diasCritico === 1 ? '' : 's');
-            }
-
-            var link = document.createElement('span');
-            link.className = 'evaporador-link';
-            link.textContent = 'Ver dia do pico →';
-
-            rodape.append(ocorrencias, link);
-
-            card.append(topo, valor, rodape);
-            return card;
-        }
-
-        function atualizarResumo(analises) {
-            var diasAlerta = 0;
-            var diasCritico = 0;
-
-            diasValidos.forEach(function (item) {
-                var chave = DadosEvaporadores.obterEstadoDoDia(item.iso).chave;
-                if (chave === 'critical') diasCritico++;
-                if (chave === 'attention') diasAlerta++;
-            });
-
-            var diasComVazamento = diasAlerta + diasCritico;
-            var pior = analises[0];
-
-            totalEvaporadores.textContent = String(analises.length);
-            contadorEvaporadores.textContent = analises.length + ' monitorados';
-            totalDias.textContent = diasValidos.length + (diasValidos.length === 1 ? ' dia analisado.' : ' dias analisados.');
-
-            totalVazamentos.textContent = String(diasComVazamento);
-            unidadeVazamentos.textContent = diasComVazamento === 1 ? 'dia' : 'dias';
-
-            if (diasComVazamento === 0) {
-                cardVazamentos.dataset.state = 'stable';
-                detalheVazamentos.textContent = 'Nenhum vazamento detectado no mês.';
-            } else {
-                cardVazamentos.dataset.state = diasCritico > 0 ? 'critical' : 'attention';
-                detalheVazamentos.textContent = diasAlerta + ' em alerta e ' + diasCritico +
-                    (diasCritico === 1 ? ' crítico.' : ' críticos.');
-            }
-
-            if (pior.estado.chave !== 'stable') {
-                estadoNivel.textContent = pior.estado.rotulo;
-                estadoNivel.dataset.state = pior.estado.chave;
-                estadoDescricao.textContent = pior.evaporador.nome + ' · pico de ' +
-                    DadosEvaporadores.formatarPpm(pior.pico) + ' ppm em ' +
-                    DadosEvaporadores.formatarDataBR(pior.isoPico);
-            } else {
-                estadoNivel.textContent = 'Estável';
-                estadoNivel.dataset.state = 'stable';
-                estadoDescricao.textContent = 'Manter rotina';
-            }
-        }
-
-        function renderizar() {
-            var analises = DadosEvaporadores.evaporadores.map(analisarEvaporador);
-
-            var listaOrdenada = analises.slice().sort(function (a, b) {
-                var ordemA = ordemEstados[a.estado.chave];
-                var ordemB = ordemEstados[b.estado.chave];
-
-                if (ordemA !== ordemB) return ordemA - ordemB;
-                return b.pico - a.pico;
-            });
-
-            rotuloPeriodo.textContent = mes.nome + ' ' + mes.ano;
-            dataPeriodo.textContent = DadosEvaporadores.formatarDataBR(diasValidos[0].iso) + ' a ' +
-                DadosEvaporadores.formatarDataBR(diasValidos[diasValidos.length - 1].iso);
-
-            renderizarCalendario();
-            atualizarResumo(listaOrdenada);
-
-            listaEvaporadores.replaceChildren();
-
-            listaOrdenada.forEach(function (analise) {
-                listaEvaporadores.appendChild(criarCardEvaporador(analise));
-            });
-        }
-
-        renderizar();
-
-    </script>
-
+    <script src="../js/dashboard-navigation.js"></script>
+    <script src="../js/dashboard-mensal.js"></script>
 </body>
+
 </html>

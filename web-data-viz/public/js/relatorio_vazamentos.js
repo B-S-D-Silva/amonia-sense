@@ -15,6 +15,43 @@
         return horas + ' h ' + restante + ' min';
     }
 
+    function criarVazamentosDoDia(dataISO) {
+        if (!global.DadosEvaporadores || dataISO !== global.DadosEvaporadores.dataHojeISO()) return null;
+
+        var vazamentos = [];
+        global.DadosEvaporadores.evaporadores.forEach(function (evaporador) {
+            var leituras = global.DadosEvaporadores.obterLeituras(evaporador, dataISO);
+            var inicio = null;
+            var ultimaLeitura = null;
+
+            function registrar(fim) {
+                if (inicio === null) return;
+                vazamentos.push({
+                    sensor: evaporador.sensor,
+                    sala: 'Sala de desossa bovina',
+                    inicio: formatarHora(inicio),
+                    fim: fim === 24 * 60 ? '00:00 (+1 dia)' : formatarHora(fim),
+                    duracaoMinutos: fim - inicio
+                });
+                inicio = null;
+                ultimaLeitura = null;
+            }
+
+            leituras.forEach(function (valor, indice) {
+                if (Number.isFinite(valor) && valor >= 1) {
+                    if (inicio === null) inicio = indice * 60;
+                    ultimaLeitura = indice;
+                } else if (inicio !== null) {
+                    registrar(indice * 60);
+                }
+            });
+
+            if (inicio !== null) registrar((ultimaLeitura + 1) * 60);
+        });
+
+        return vazamentos;
+    }
+
     function criarMes(ano, mes) {
         var quantidadeDias = new Date(ano, mes, 0).getDate();
         var semente = ano + mes;
@@ -38,6 +75,7 @@
 
                     vazamentos.push({
                         sensor: 'Sensor ' + (1 + (dia + mes + indice * 2) % 6),
+                        sala: 'Sala de desossa bovina',
                         inicio: formatarHora(inicioMinutos),
                         fim: formatarHora(inicioMinutos + duracaoMinutos),
                         duracaoMinutos: duracaoMinutos
@@ -57,6 +95,25 @@
                     return total + vazamento.duracaoMinutos;
                 }, 0)
             });
+        }
+
+        if (global.DadosEvaporadores) {
+            var hoje = global.DadosEvaporadores.dataHojeISO();
+            var partesHoje = hoje.split('-').map(Number);
+            if (partesHoje[0] === ano && partesHoje[1] === mes) {
+                var vazamentosHoje = criarVazamentosDoDia(hoje);
+                if (vazamentosHoje) {
+                    var indiceHoje = partesHoje[2] - 1;
+                    dias[indiceHoje] = {
+                        dia: partesHoje[2],
+                        dataISO: hoje,
+                        vazamentos: vazamentosHoje,
+                        duracaoTotalMinutos: vazamentosHoje.reduce(function (total, vazamento) {
+                            return total + vazamento.duracaoMinutos;
+                        }, 0)
+                    };
+                }
+            }
         }
 
         return dias;

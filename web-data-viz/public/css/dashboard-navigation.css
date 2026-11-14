@@ -55,7 +55,38 @@
 .month-picker { display: flex; flex-direction: column; gap: 8px; min-width: 220px; }
 .month-picker label { font-size: 13px; font-weight: 700; }
 .month-picker input { min-width: 0; width: 100%; padding: 12px; background: #fff; color: #17231f; border: 1px solid #b5c8bd; border-radius: 10px; font: inherit; }
+.month-controls { display: flex; align-items: center; gap: 8px; }
+.month-step { display: grid; place-items: center; width: 42px; height: 42px; flex: 0 0 42px; border: 1px solid #dce6e0; border-radius: 10px; background: #fff; color: #347457; font: inherit; font-size: 24px; cursor: pointer; }
+.month-step:hover:not(:disabled) { background: #edf6f0; border-color: #b5c8bd; }
+.month-step:disabled { color: #aab7b0; cursor: not-allowed; }
+.monthly-chart { height: 360px; }
+.monthly-chart-legend .sem-vazamento > span { background: #cbd6d0; }
 .month-picker small { color: #52635a; font-size: 11px; }
+.detalhe-titulo { margin-bottom: 18px; }
+.seletor-mes { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-bottom: 16px; padding: 14px 18px; background: #fff; border: 1px solid #e1e9e4; border-radius: 16px; box-shadow: 0 8px 24px rgba(24, 55, 41, 0.06); }
+.seletor-info { display: flex; flex-direction: column; gap: 2px; }
+.seletor-info label { color: #17231f; font-size: 14px; font-weight: 700; }
+.seletor-info small { color: #74827b; font-size: 12px; }
+.seletor-controles { display: flex; align-items: center; gap: 8px; }
+.seletor-controles input { min-width: 0; padding: 10px 12px; color: #17231f; background: #f7faf8; border: 1px solid #d5e0da; border-radius: 10px; font: inherit; font-size: 14px; }
+.btn-mes { display: grid; place-items: center; width: 40px; height: 40px; color: #2f6b4f; background: #e8f2ec; border: 1px solid transparent; border-radius: 10px; font-size: 18px; line-height: 1; cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease; }
+.btn-mes:hover:not(:disabled) { background: #d8eadf; border-color: #b9d6c6; }
+.btn-mes:disabled { color: #aab7b0; cursor: not-allowed; }
+.resumo-relatorio { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 16px; }
+.resumo-relatorio .card { position: relative; padding: 18px 20px 18px 24px; border-radius: 16px; overflow: hidden; }
+.resumo-relatorio .card::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; background: #2f6b4f; }
+.resumo-relatorio .card.card-alerta::before { background: #df5b52; }
+.resumo-rotulo { display: block; margin-bottom: 8px; color: #5d6c64; font-size: 13px; font-weight: 600; }
+.resumo-valor { display: block; color: #17231f; font-size: 30px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.resumo-valor small { color: #74827b; font-size: 13px; font-weight: 400; }
+.dica-clique { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; padding: 10px 14px; color: #2f6b4f; background: #e8f2ec; border-radius: 12px; font-size: 13px; line-height: 1.5; }
+.dica-clique svg { flex: none; }
+.grafico-scroll { overflow-x: auto; padding-bottom: 4px; }
+.grafico-mensal { min-width: 900px; height: 340px; }
+.estado-vazio { display: none; margin-top: 12px; padding: 14px 16px; color: #2f6b4f; background: #e8f2ec; border-radius: 12px; font-size: 14px; font-weight: 600; }
+.estado-vazio.visivel { display: block; }
+.legenda-item.sem-vazamento span { background: #cbd6d0; }
+.legenda-item.com-vazamento span { background: #df5b52; }
 .data-notice { margin: 0 0 20px; padding: 12px 16px; border: 1px solid #cddde8; border-radius: 10px; background: #edf4f9; color: #3c5b73; font-size: 12px; line-height: 1.6; }
 .dashboard-page .monthly-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 24px; }
 .dashboard-page .monthly-kpis .card { padding: 22px; }
@@ -95,4 +126,8 @@
     .monthly-calendar { padding: 16px; }
     .calendar-weekdays, .monthly-calendar .calendario { gap: 4px; }
     .monthly-calendar .dia-mes { height: 42px; font-size: 12px; }
+    .seletor-mes { align-items: stretch; flex-direction: column; }
+    .seletor-controles { justify-content: space-between; }
+    .seletor-controles input { flex: 1; }
+    .resumo-valor { font-size: 26px; }
 }

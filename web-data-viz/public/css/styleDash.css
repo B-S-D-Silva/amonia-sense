@@ -25,6 +25,7 @@ body {
     min-height: 100vh;
     padding-top: 96px;
     overflow-x: hidden;
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
 }
 
 .dashboard-page main {
@@ -55,25 +56,39 @@ body {
 }
 
 .titulo {
-    margin-bottom: 16px;
+    margin-bottom: 24px;
+}
+
+.titulo .section-eyebrow {
+    margin: 0 0 8px;
+    color: #347457;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
 }
 
 .titulo h1 {
-    margin: 0 0 4px;
-    color: #17231f;
-    font-size: clamp(21px, 2.4vw, 27px);
-    letter-spacing: -0.6px;
+    margin: 0 0 8px;
+    color: #20372d;
+    font-size: clamp(28px, 3.2vw, 36px);
+    font-weight: 600;
+    letter-spacing: -1.1px;
+    line-height: 1.15;
 }
 
 .titulo p {
-    margin: 0 0 3px;
+    margin: 0 0 5px;
     color: #43534b;
-    font-size: 15px;
+    font-size: 14px;
 }
 
 .titulo > span {
-    color: #829088;
-    font-size: 13px;
+    display: block;
+    max-width: 680px;
+    margin-top: 8px;
+    color: #6d7d74;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
 .dashboard-page .card,
