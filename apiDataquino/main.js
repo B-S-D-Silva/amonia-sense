@@ -3,6 +3,7 @@ const { SerialPort, ReadlineParser } = require('serialport');
 const express = require('express');
 const mysql = require('mysql2');
 const path = require('path');
+const { listenerCount } = require('cluster');
 
 // constantes para configurações
 const SERIAL_BAUD_RATE = 9600;
@@ -83,24 +84,63 @@ arduino.pipe(new ReadlineParser({ delimiter: '\r\n' })).on('data', async (data) 
         leituraSensor = sensorGas;
     }
 
-    if (Number.isFinite(sensorGas)) {
-        valoresSensorGas.push(sensorGas);
+if (Number.isFinite(sensorGas)) {
+    valoresSensorGas.push(sensorGas);
 
-        while (valoresSensorGas.length > 500) {
-            valoresSensorGas.shift();
-        }
-
-        if (HABILITAR_OPERACAO_INSERIR) {
-            await poolBancoDados.execute(
-                'INSERT INTO Dado_captado (fkSensor, concentracaoAmonia) VALUES (1, ?)',
-                [sensorGas]
-            );
-
-            console.log('Valor inserido no banco:', sensorGas);
-        }
-    } else {
-        console.log('Erro: valor de PPM inválido:', data);
+    while (valoresSensorGas.length > 500) {
+        valoresSensorGas.shift();
     }
+
+    let sensorSimulado1 = 0;
+    let sensorSimulado2 = 0;
+    let sensorSimulado3 = 0;
+    let sensorSimulado4 = 0;
+    let sensorSimulado5 = 0;
+    let sensorSimulado6 = 0;
+
+    let listaSensores = [
+        sensorGas,
+        sensorSimulado1,
+        sensorSimulado2,
+        sensorSimulado3,
+        sensorSimulado4,
+        sensorSimulado5,
+        sensorSimulado6
+    ];
+
+    for (let i = 1; i < listaSensores.length; i++) {
+
+        sensorSimulado1 = Number((Math.random()).toFixed(2));
+        sensorSimulado2 = Number((Math.random() * 10 + 10).toFixed(2));
+        sensorSimulado3 = Number((Math.random() * 15 + 20).toFixed(2));
+        sensorSimulado4 = Number((Math.random() * 2).toFixed(2));
+        sensorSimulado5 = Number((Math.random() * 0.5).toFixed(2));
+        sensorSimulado6 = Number((Math.random() * 5).toFixed(2));
+
+        listaSensores = [
+            sensorGas,
+            sensorSimulado1,
+            sensorSimulado2,
+            sensorSimulado3,
+            sensorSimulado4,
+            sensorSimulado5,
+            sensorSimulado6
+        ];
+    }
+
+    if (HABILITAR_OPERACAO_INSERIR) {
+        for (let i = 0; i < listaSensores.length; i++) {
+            await poolBancoDados.execute(
+                'INSERT INTO Dado_captado (fkSensor, concentracaoAmonia) VALUES (?, ?)',
+                [i + 1, listaSensores[i]]
+            );
+        }
+    }
+
+} else {
+    console.log('Erro: valor de PPM inválido:', data);
+}
+
 });
 
     // evento para lidar com erros na comunicação serial
